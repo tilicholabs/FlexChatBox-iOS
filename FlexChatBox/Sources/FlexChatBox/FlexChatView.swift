@@ -1,6 +1,6 @@
 //
 //  FlexChatView.swift
-//  
+//
 //
 //  Created by Aditya Kumar Bodapati on 23/02/23.
 //
@@ -15,8 +15,10 @@ public enum FlexType: String {
 }
 
 public struct FlexChatView: View {
-    @State var textFieldText = ""
+    
     @FocusState private var start
+    @EnvironmentObject private var viewModel: ViewModel
+    
     let flexType: FlexType
     let textFieldPlaceHolder: String
     
@@ -33,11 +35,30 @@ public struct FlexChatView: View {
             flexSend
         }
         .padding(.all, 8.0)
+        .sheet(isPresented: $viewModel.presentCamera) {
+            ImagePicker(capturedImage: $viewModel.image)
+                .ignoresSafeArea()
+        }
+        
+        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the camera permission")
+        }
     }
     
     @ViewBuilder
     private var flexTextField: some View {
-        TextField(textFieldPlaceHolder, text: $textFieldText, axis: .vertical)
+        TextField(textFieldPlaceHolder, text: $viewModel.textFieldText, axis: .vertical)
             .padding(.all, 8.0)
             .lineLimit(0...4)
             .overlay(RoundedRectangle(cornerRadius: 4)
@@ -48,7 +69,7 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var flexButton: some View {
         Button(action: {
-            print("Flex button clicked")
+            viewModel.checkCameraAuthorizationStatus()
         }, label: {
             Image(systemName: flexType.rawValue)
         })

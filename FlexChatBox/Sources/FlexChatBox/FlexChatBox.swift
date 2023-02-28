@@ -1,6 +1,11 @@
-public struct FlexChatBox {
-    public private(set) var text = "Hello, World!"
+import SwiftUI
 
-    public init() {
+public struct FlexChatBox: View {
+    
+    public init() {}
+    
+    public var body: some View {
+        FlexChatView()
+            .environmentObject(ViewModel())
     }
 }
