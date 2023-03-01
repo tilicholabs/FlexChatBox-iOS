@@ -7,11 +7,26 @@
 
 import SwiftUI
 
-public enum FlexType: String {
-    case camera = "camera"
-    case gallery = "photo"
-    case mic = "mic"
-    case custom = "paperclip"
+public enum FlexType {
+    case camera
+    case gallery
+    case mic
+    case custom
+}
+
+extension FlexType {
+    var icon: String {
+        switch self {
+        case .camera:
+            return "camera"
+        case .gallery:
+            return "photo"
+        case .mic:
+            return "mic"
+        case .custom:
+            return "paperclip"
+        }
+    }
 }
 
 public struct FlexChatView: View {
@@ -21,11 +36,14 @@ public struct FlexChatView: View {
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
+    let completion: (UIImage?) -> Void
     
     public init(flexType: FlexType = .camera,
-                placeholder: String = "Type your text here") {
+                placeholder: String = "Type your text here",
+                _ completion: @escaping (UIImage?) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
+        self.completion = completion
     }
     
     public var body: some View {
@@ -38,6 +56,10 @@ public struct FlexChatView: View {
         .sheet(isPresented: $viewModel.presentCamera) {
             ImagePicker(capturedImage: $viewModel.image)
                 .ignoresSafeArea()
+                .onReceive(viewModel.$image) { image in
+                    guard let image else { return }
+                    self.completion(image)
+                }
         }
         
         .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
@@ -71,7 +93,7 @@ public struct FlexChatView: View {
         Button(action: {
             viewModel.checkCameraAuthorizationStatus()
         }, label: {
-            Image(systemName: flexType.rawValue)
+            Image(systemName: flexType.icon)
         })
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
@@ -93,7 +115,11 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView()
+        FlexChatView({ image in
+            guard let image else { return }
+            print(image)
+        })
             .frame(maxHeight: .infinity, alignment: .bottom)
+            .environmentObject(ViewModel())
     }
 }

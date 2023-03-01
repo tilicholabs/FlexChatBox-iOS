@@ -2,10 +2,14 @@ import SwiftUI
 
 public struct FlexChatBox: View {
     
-    public init() {}
+    let completion: (UIImage?) -> Void
+    
+    public init(_ completion: @escaping (UIImage?) -> Void) {
+        self.completion = completion
+    }
     
     public var body: some View {
-        FlexChatView()
+        FlexChatView(self.completion)
             .environmentObject(ViewModel())
     }
 }
