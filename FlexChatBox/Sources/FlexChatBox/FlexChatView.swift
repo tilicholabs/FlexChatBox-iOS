@@ -7,28 +7,6 @@
 
 import SwiftUI
 
-public enum FlexType {
-    case camera
-    case gallery
-    case mic
-    case custom
-}
-
-extension FlexType {
-    var icon: String {
-        switch self {
-        case .camera:
-            return "camera"
-        case .gallery:
-            return "photo"
-        case .mic:
-            return "mic"
-        case .custom:
-            return "paperclip"
-        }
-    }
-}
-
 public struct FlexChatView: View {
     
     @FocusState private var start
@@ -36,14 +14,17 @@ public struct FlexChatView: View {
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
-    let completion: (UIImage?) -> Void
+    let flexCompletion: (UIImage?) -> Void
+    let onClickSend: (String?) -> Void
     
     public init(flexType: FlexType = .camera,
                 placeholder: String = "Type your text here",
-                _ completion: @escaping (UIImage?) -> Void) {
+                flexCompletion: @escaping (UIImage?) -> Void,
+                onClickSend: @escaping (String?) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
-        self.completion = completion
+        self.flexCompletion = flexCompletion
+        self.onClickSend = onClickSend
     }
     
     public var body: some View {
@@ -56,10 +37,7 @@ public struct FlexChatView: View {
         .sheet(isPresented: $viewModel.presentCamera) {
             ImagePicker(capturedImage: $viewModel.image)
                 .ignoresSafeArea()
-                .onReceive(viewModel.$image) { image in
-                    guard let image else { return }
-                    self.completion(image)
-                }
+                .onReceive(viewModel.$image) { self.flexCompletion($0) }
         }
         
         .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
@@ -103,7 +81,7 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var flexSend: some View {
         Button(action: {
-            print("Send button clicked")
+            onClickSend(viewModel.textFieldText)
         }, label: {
             Image(systemName: "paperplane")
         })
@@ -115,10 +93,10 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView({ image in
+        FlexChatView(flexCompletion: { image in
             guard let image else { return }
             print(image)
-        })
+        }, onClickSend: { print($0 ?? "")} )
             .frame(maxHeight: .infinity, alignment: .bottom)
             .environmentObject(ViewModel())
     }
