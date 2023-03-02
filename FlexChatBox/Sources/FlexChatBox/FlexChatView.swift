@@ -6,20 +6,22 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 public struct FlexChatView: View {
     
     @FocusState private var start
     @EnvironmentObject private var viewModel: ViewModel
+    @StateObject var imagePicker = ImagePicker()
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
-    let flexCompletion: (UIImage?) -> Void
+    let flexCompletion: (FlexOutput) -> Void
     let onClickSend: (String?) -> Void
     
-    public init(flexType: FlexType = .camera,
-                placeholder: String = "Type your text here",
-                flexCompletion: @escaping (UIImage?) -> Void,
+    public init(flexType: FlexType,
+                placeholder: String,
+                flexCompletion: @escaping (FlexOutput) -> Void,
                 onClickSend: @escaping (String?) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
@@ -30,30 +32,14 @@ public struct FlexChatView: View {
     public var body: some View {
         HStack(alignment: .bottom, spacing: 12.0) {
             flexTextField
-            flexButton
+            if flexType == .gallery {
+                photosPicker
+            } else {
+                flexButton
+            }
             flexSend
         }
         .padding(.all, 8.0)
-        .sheet(isPresented: $viewModel.presentCamera) {
-            ImagePicker(capturedImage: $viewModel.image)
-                .ignoresSafeArea()
-                .onReceive(viewModel.$image) { self.flexCompletion($0) }
-        }
-        
-        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
-            Button {
-                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-            } label: {
-                Text("Settings")
-            }
-        } message: {
-            Text("Please click on the Settings to enable the camera permission")
-        }
     }
     
     @ViewBuilder
@@ -67,6 +53,22 @@ public struct FlexChatView: View {
     }
     
     @ViewBuilder
+    private var photosPicker: some View {
+        PhotosPicker(selection: $imagePicker.imageSelections,
+                     maxSelectionCount: 10,
+                     matching: .any(of: [.images, .videos]),
+                     photoLibrary: .shared()) {
+            Image(systemName: flexType.icon)
+        }
+                     .padding(.all, 10)
+                     .overlay(RoundedRectangle(cornerRadius: 4)
+                        .stroke(Color(.lightGray)))
+                     .onReceive(imagePicker.$media) {
+                         self.flexCompletion(.gallery($0))
+                     }
+    }
+    
+    @ViewBuilder
     private var flexButton: some View {
         Button(action: {
             viewModel.checkCameraAuthorizationStatus()
@@ -76,6 +78,30 @@ public struct FlexChatView: View {
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
+        .sheet(isPresented: $viewModel.presentCamera) {
+            CaptureImage(capturedImage: $viewModel.capturedImage)
+                .ignoresSafeArea()
+                .onReceive(viewModel.$capturedImage) { image in
+                    guard let image else { return }
+                    self.flexCompletion(.camera(image))
+                    
+                }
+        }
+        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the camera permission")
+        }
     }
     
     @ViewBuilder
@@ -93,8 +119,9 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView(flexCompletion: { image in
-            guard let image else { return }
+        FlexChatView(flexType: .gallery,
+                     placeholder: "Enter your text",
+                     flexCompletion: { image in
             print(image)
         }, onClickSend: { print($0 ?? "")} )
             .frame(maxHeight: .infinity, alignment: .bottom)

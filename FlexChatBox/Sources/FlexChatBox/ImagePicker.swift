@@ -1,45 +1,74 @@
 //
 //  ImagePicker.swift
 //
-//  Created by Damerla Bhanu Prakash on 28/02/23.
+//  Created by Aditya Kumar Bodapati on 02/03/23.
 //
 
-import UIKit
 import SwiftUI
+import PhotosUI
 
-struct ImagePicker: UIViewControllerRepresentable {
+public struct Media {
+    public var images: [Image]
+    public var videos: [URL]
     
-    @Binding var capturedImage: UIImage?
-    @Environment(\.presentationMode) private var presentationMode
-    
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
-        let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = .camera
-        imagePicker.delegate = context.coordinator
-        return imagePicker
+    public init(images: [Image] = [], videos: [URL] = []) {
+        self.images = images
+        self.videos = videos
     }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController,
-                                context: UIViewControllerRepresentableContext<ImagePicker>) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        var parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-                parent.capturedImage = image
+}
+
+struct Movie: Transferable {
+    let url: URL
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(contentType: .movie) { movie in
+            SentTransferredFile(movie.url)
+        } importing: { received in
+            let copy = URL.documentsDirectory.appending(path: UUID().uuidString + ".mp4")
+
+            if FileManager.default.fileExists(atPath: copy.path()) {
+                try FileManager.default.removeItem(at: copy)
             }
-            parent.presentationMode.wrappedValue.dismiss()
+
+            try FileManager.default.copyItem(at: received.file, to: copy)
+            return Self.init(url: copy)
         }
     }
 }
 
+@MainActor
+class ImagePicker: ObservableObject {
+    @Published var media = Media()
+    @Published var imageSelections: [PhotosPickerItem] = [] {
+        didSet {
+            Task {
+                if !imageSelections.isEmpty {
+                    try await loadTransferable(from: imageSelections)
+                    imageSelections = []
+                }
+            }
+        }
+    }
+    
+    func loadTransferable(from imageSelections: [PhotosPickerItem]) async throws {
+        do {
+            media.images.removeAll()
+            media.videos.removeAll()
+            for imageSelection in imageSelections {
+                if imageSelection.supportedContentTypes[0].isSubtype(of: .movie) {
+                    if let movie = try await imageSelection.loadTransferable(type: Movie.self) {
+                        media.videos.append(movie.url)
+                    }
+                } else {
+                    if let data = try await imageSelection.loadTransferable(type: Data.self) {
+                        if let uiImage = UIImage(data: data) {
+                            media.images.append(Image(uiImage: uiImage))
+                        }
+                    }
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+}

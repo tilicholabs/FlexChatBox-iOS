@@ -11,7 +11,7 @@ class ViewModel: ObservableObject {
     @Published var textFieldText = ""
     @Published var showSettingsAlert = false
     @Published var presentCamera = false
-    @Published var image: UIImage?
+    @Published var capturedImage: Image?
     
     func checkCameraAuthorizationStatus() {
         showSettingsAlert = false

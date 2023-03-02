@@ -1,9 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Aditya Kumar Bodapati on 01/03/23.
 //
+
+import UIKit
+import SwiftUI
 
 public enum FlexType {
     case camera
@@ -25,4 +28,12 @@ extension FlexType {
             return "paperclip"
         }
     }
+}
+
+
+public enum FlexOutput {
+    case camera(Image)
+    case gallery(Media)
+    case mic(URL)
+    case custom(String)
 }
