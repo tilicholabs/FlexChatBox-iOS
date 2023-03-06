@@ -14,8 +14,8 @@ public struct FlexChatView: View {
     @FocusState private var start
     @EnvironmentObject private var viewModel: ViewModel
     @StateObject var imagePicker = ImagePicker()
-    
     @StateObject var locationManager = LocationManager.shared
+    @State private var flexButtonName: String
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
@@ -30,6 +30,7 @@ public struct FlexChatView: View {
         self.textFieldPlaceHolder = placeholder
         self.flexCompletion = flexCompletion
         self.onClickSend = onClickSend
+        flexButtonName = flexType.icon
     }
     
     public var body: some View {
@@ -84,7 +85,25 @@ public struct FlexChatView: View {
                 break
             }
         }, label: {
-            Image(systemName: flexType.icon)
+            Image(systemName: flexButtonName)
+                .onLongPressGesture(minimumDuration: 0.5) {
+                    guard flexType == .mic else { return }
+                    viewModel.checkMicrophoneAuthorizationStatus()
+                    guard viewModel.isMicPermissionGranted else { return }
+                    flexButtonName = "stop"
+                    viewModel.startRecording()
+                }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .onEnded { _ in
+                            if flexType == .mic,
+                               viewModel.isRecording,
+                               let recordedAudio = viewModel.stopRecording() {
+                                flexButtonName = flexType.icon
+                                flexCompletion(.mic(recordedAudio))
+                            }
+                        }
+                )
         })
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
