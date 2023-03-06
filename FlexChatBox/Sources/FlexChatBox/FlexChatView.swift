@@ -7,12 +7,15 @@
 
 import SwiftUI
 import PhotosUI
+import CoreLocationUI
 
 public struct FlexChatView: View {
     
     @FocusState private var start
     @EnvironmentObject private var viewModel: ViewModel
     @StateObject var imagePicker = ImagePicker()
+    
+    @StateObject var locationManager = LocationManager.shared
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
@@ -32,6 +35,7 @@ public struct FlexChatView: View {
     public var body: some View {
         HStack(alignment: .bottom, spacing: 12.0) {
             flexTextField
+            
             if flexType == .gallery {
                 photosPicker
             } else {
@@ -71,7 +75,14 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var flexButton: some View {
         Button(action: {
-            viewModel.checkCameraAuthorizationStatus()
+            switch flexType {
+            case .camera:
+                viewModel.checkCameraAuthorizationStatus()
+            case .location:
+                locationManager.requestLocationUpdates()
+            default:
+                break
+            }
         }, label: {
             Image(systemName: flexType.icon)
         })
@@ -87,6 +98,11 @@ public struct FlexChatView: View {
                     
                 }
         }
+        .onReceive(locationManager.$getCoordinates, perform: { isGranted in
+            if isGranted, let coordinates = locationManager.coordinates {
+                self.flexCompletion(.location(coordinates))
+            }
+        })
         .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
             Button {
                 // nothing needed here
@@ -101,6 +117,21 @@ public struct FlexChatView: View {
             }
         } message: {
             Text("Please click on the Settings to enable the camera permission")
+        }
+        .alert("Go to settings", isPresented: $locationManager.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the Location permission")
         }
     }
     
@@ -119,12 +150,12 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView(flexType: .gallery,
+        FlexChatView(flexType: .location,
                      placeholder: "Enter your text",
                      flexCompletion: { image in
             print(image)
         }, onClickSend: { print($0 ?? "")} )
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .environmentObject(ViewModel())
+        .frame(maxHeight: .infinity, alignment: .bottom)
+        .environmentObject(ViewModel())
     }
 }
