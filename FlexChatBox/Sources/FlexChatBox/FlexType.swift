@@ -7,7 +7,7 @@
 
 import UIKit
 import SwiftUI
-import CoreLocation
+import MapKit
 
 public enum FlexType {
     case camera
@@ -17,7 +17,7 @@ public enum FlexType {
     case location
 }
 
-extension FlexType {
+public extension FlexType {
     var icon: String {
         switch self {
         case .camera:
@@ -40,5 +40,5 @@ public enum FlexOutput {
     case gallery(Media)
     case mic(URL)
     case custom(String)
-    case location(CLLocationCoordinate2D)
+    case location(Map<_DefaultAnnotatedMapContent<[Location]>>)
 }

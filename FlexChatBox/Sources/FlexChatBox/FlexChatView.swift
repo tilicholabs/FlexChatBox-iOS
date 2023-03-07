@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import MapKit
 import CoreLocationUI
 
 public struct FlexChatView: View {
@@ -148,7 +149,8 @@ public struct FlexChatView: View {
         }
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
-                self.flexCompletion(.location(coordinates))
+                let map = Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude), latitudinalMeters: 1000, longitudinalMeters: 1000)), annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
+                self.flexCompletion(.location(map))
             }
         })
         .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
@@ -205,5 +207,16 @@ struct FlexChatView_Previews: PreviewProvider {
         }, onClickSend: { print($0 ?? "")} )
         .frame(maxHeight: .infinity, alignment: .bottom)
         .environmentObject(ViewModel())
+    }
+}
+
+public struct Location: Identifiable {
+    public let id = UUID()
+    let coordinates: CLLocationCoordinate2D
+}
+
+extension CLLocationCoordinate2D: Identifiable {
+    public var id: String {
+        "\(latitude)-\(longitude)"
     }
 }
