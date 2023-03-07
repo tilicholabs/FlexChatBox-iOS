@@ -36,10 +36,12 @@ public struct FlexChatView: View {
     public var body: some View {
         HStack(alignment: .bottom, spacing: 12.0) {
             flexTextField
-            
-            if flexType == .gallery {
+            switch flexType {
+            case .gallery:
                 photosPicker
-            } else {
+            case .mic:
+                micButton
+            default:
                 flexButton
             }
             flexSend
@@ -74,16 +76,9 @@ public struct FlexChatView: View {
     }
     
     @ViewBuilder
-    private var flexButton: some View {
+    private var micButton: some View {
         Button(action: {
-            switch flexType {
-            case .camera:
-                viewModel.checkCameraAuthorizationStatus()
-            case .location:
-                locationManager.requestLocationUpdates()
-            default:
-                break
-            }
+            // Action long press
         }, label: {
             Image(systemName: flexButtonName)
                 .onLongPressGesture(minimumDuration: 0.5) {
@@ -104,6 +99,40 @@ public struct FlexChatView: View {
                             }
                         }
                 )
+        })
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the camera permission")
+        }
+    }
+    
+    @ViewBuilder
+    private var flexButton: some View {
+        Button(action: {
+            switch flexType {
+            case .camera:
+                viewModel.checkCameraAuthorizationStatus()
+            case .location:
+                locationManager.requestLocationUpdates()
+            default:
+                break
+            }
+        }, label: {
+            Image(systemName: flexType.icon)
         })
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
