@@ -12,6 +12,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     @Published var coordinates: CLLocationCoordinate2D?
     @Published var showSettingsAlert = false
     @Published var getCoordinates = false
+    @Published var locationStatus: Bool?
 
     private override init() {
         super.init()
@@ -26,28 +27,41 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     }()
 
     func requestLocationUpdates() {
-        getCoordinates = false
+        (getCoordinates, showSettingsAlert) = (false, false)
         switch manager.authorizationStatus {
         case .notDetermined:
+            locationStatus = nil
             manager.requestWhenInUseAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
-            getCoordinates = true
+            (getCoordinates, locationStatus) = (true, true)
             manager.startUpdatingLocation()
         case .denied:
+            locationStatus = false
             showSettingsAlert = true
         default:
-            break
+            locationStatus = nil
+        }
+    }
+    
+    func checkLocationStatusWhenAppear() {
+        switch manager.authorizationStatus {
+        case .denied:
+            locationStatus = false
+        default:
+            locationStatus = nil
         }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
+            locationStatus = true
             getCoordinates = true
             manager.startUpdatingLocation()
         case .denied:
-            showSettingsAlert = true
+            locationStatus = false
         default:
+            locationStatus = nil
             manager.stopUpdatingLocation()
         }
     }

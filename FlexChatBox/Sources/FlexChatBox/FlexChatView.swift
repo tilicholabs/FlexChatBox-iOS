@@ -37,14 +37,20 @@ public struct FlexChatView: View {
     public var body: some View {
         HStack(alignment: .bottom, spacing: 12.0) {
             flexTextField
+            
             switch flexType {
             case .gallery:
                 photosPicker
             case .mic:
                 micButton
-            default:
-                flexButton
+            case .location:
+                locationButton
+            case .camera:
+                cameraButton
+            case .custom:
+                customButton
             }
+            
             flexSend
         }
         .padding(.all, 8.0)
@@ -77,23 +83,34 @@ public struct FlexChatView: View {
     }
     
     @ViewBuilder
+    private var customButton: some View {
+        Button(action: {
+            // Custom button action
+            print("Custom button is not initialised")
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+    }
+    
+    @ViewBuilder
     private var micButton: some View {
         Button(action: {
             // Action long press
         }, label: {
             Image(systemName: flexButtonName)
                 .onLongPressGesture(minimumDuration: 0.5) {
-                    guard flexType == .mic else { return }
                     viewModel.checkMicrophoneAuthorizationStatus()
-                    guard viewModel.isMicPermissionGranted else { return }
+                    guard let granted = viewModel.isMicPermissionGranted, granted else { return }
                     flexButtonName = "stop"
                     viewModel.startRecording()
                 }
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0)
                         .onEnded { _ in
-                            if flexType == .mic,
-                               viewModel.isRecording,
+                            if viewModel.isRecording,
                                let recordedAudio = viewModel.stopRecording() {
                                 flexButtonName = flexType.icon
                                 flexCompletion(.mic(recordedAudio))
@@ -101,6 +118,10 @@ public struct FlexChatView: View {
                         }
                 )
         })
+        .onAppear(perform: {
+            viewModel.checkMicPermissionWhenAppear()
+        })
+        .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? .gray: Color(.tintColor))
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
@@ -122,19 +143,16 @@ public struct FlexChatView: View {
     }
     
     @ViewBuilder
-    private var flexButton: some View {
+    private var cameraButton: some View {
         Button(action: {
-            switch flexType {
-            case .camera:
-                viewModel.checkCameraAuthorizationStatus()
-            case .location:
-                locationManager.requestLocationUpdates()
-            default:
-                break
-            }
+            viewModel.checkCameraAuthorizationStatus()
         }, label: {
             Image(systemName: flexType.icon)
         })
+        .onAppear(perform: {
+            viewModel.checkCameraStatusWhenAppear()
+        })
+        .foregroundColor(!(viewModel.cameraStatus ?? true) ? .gray: Color(.tintColor))
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
@@ -147,12 +165,6 @@ public struct FlexChatView: View {
                     
                 }
         }
-        .onReceive(locationManager.$getCoordinates, perform: { isGranted in
-            if isGranted, let coordinates = locationManager.coordinates {
-                let map = Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude), latitudinalMeters: 1000, longitudinalMeters: 1000)), annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
-                self.flexCompletion(.location(map))
-            }
-        })
         .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
             Button {
                 // nothing needed here
@@ -168,6 +180,28 @@ public struct FlexChatView: View {
         } message: {
             Text("Please click on the Settings to enable the camera permission")
         }
+    }
+    
+    @ViewBuilder
+    private var locationButton: some View {
+        Button(action: {
+            locationManager.requestLocationUpdates()
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .onAppear(perform: {
+                locationManager.checkLocationStatusWhenAppear()
+        })
+        .foregroundColor(!(locationManager.locationStatus ?? true) ? .gray: Color(.tintColor))
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+        .onReceive(locationManager.$getCoordinates, perform: { isGranted in
+            if isGranted, let coordinates = locationManager.coordinates {
+                let map = Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude), latitudinalMeters: 1000, longitudinalMeters: 1000)), annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
+                self.flexCompletion(.location(map))
+            }
+        })
         .alert("Go to settings", isPresented: $locationManager.showSettingsAlert) {
             Button {
                 // nothing needed here

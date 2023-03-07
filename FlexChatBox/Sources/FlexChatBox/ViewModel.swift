@@ -11,11 +11,12 @@ class ViewModel: ObservableObject {
     private var audioRecorder: AVAudioRecorder?
     private var fileName: URL?
     @Published var isRecording = false
-    @Published var isMicPermissionGranted = false
+    @Published var isMicPermissionGranted: Bool?
     
     @Published var textFieldText = ""
     @Published var showSettingsAlert = false
     @Published var presentCamera = false
+    @Published var cameraStatus: Bool?
     @Published var capturedImage: Image?
     
     func checkCameraAuthorizationStatus() {
@@ -24,15 +25,26 @@ class ViewModel: ObservableObject {
         
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
+            cameraStatus = true
             presentCamera = true
         case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { self.presentCamera = $0 }
+            AVCaptureDevice.requestAccess(for: .video) { (self.presentCamera, self.cameraStatus) = ($0, $0) }
         case .denied:
+            cameraStatus = false
             showSettingsAlert = true
-        case .restricted:
-            break
         default:
+            cameraStatus = nil
             break
+        }
+    }
+    
+    func checkCameraStatusWhenAppear() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .denied:
+            cameraStatus = false
+        default:
+            cameraStatus = nil
         }
     }
     
@@ -78,11 +90,21 @@ class ViewModel: ObservableObject {
         case .undetermined:
             audioSession.requestRecordPermission { self.isMicPermissionGranted = $0 }
         case .denied:
+            isMicPermissionGranted = false
             showSettingsAlert = true
         case .granted:
             isMicPermissionGranted = true
         @unknown default:
-            break
+            isMicPermissionGranted = nil
+        }
+    }
+    
+    func checkMicPermissionWhenAppear() {
+        switch AVAudioSession.sharedInstance().recordPermission {
+        case .denied:
+            isMicPermissionGranted = false
+        default:
+            isMicPermissionGranted = nil
         }
     }
 }
