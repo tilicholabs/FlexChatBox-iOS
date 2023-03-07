@@ -11,7 +11,7 @@ struct ContactsSheet: View {
     @EnvironmentObject var contacts: FetchedContacts
     @Environment(\.presentationMode) private var presentationMode
     @State private var selection = Set<UUID>()
-    @State private var searchText: String = ""
+    @State private var searchText: String = FlexHelper.emptyString
     @State private var editMode = EditMode.active
     let completion: ([Contact]) -> Void
     
@@ -21,17 +21,17 @@ struct ContactsSheet: View {
                 SearchBar(text: $searchText)
                 
                 List(contacts.contacts.filter({
-                    searchText.isEmpty ? true : ($0.firstName + " " + $0.lastName).lowercased().contains(searchText.lowercased())
+                    searchText.isEmpty ? true : ($0.firstName + FlexHelper.space + $0.lastName).lowercased().contains(searchText.lowercased())
                 }),
                      selection: $selection,
                      rowContent: { contact in
                     VStack(alignment: .leading) {
-                        Text(contact.firstName + " " + contact.lastName)
+                        Text(contact.firstName + FlexHelper.space + contact.lastName)
                             .font(Font.headline)
                             .bold()
-                        Text(contact.phoneNumbers.first ?? "")
+                        Text(contact.phoneNumbers.first ?? FlexHelper.emptyString)
                             .font(Font.subheadline)
-                        Text(contact.emailAddresses.first ?? "")
+                        Text(contact.emailAddresses.first ?? FlexHelper.emptyString)
                             .font(Font.subheadline)
                     }
                 })
@@ -42,11 +42,11 @@ struct ContactsSheet: View {
                     completion(selectedContacts)
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
-                    Text("Done")
+                    Text(FlexHelper.doneButtonTitle)
                 })
             }
             .environment(\.editMode, $editMode)
-            .navigationTitle("Contacts")
+            .navigationTitle(FlexHelper.contactsTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
     }

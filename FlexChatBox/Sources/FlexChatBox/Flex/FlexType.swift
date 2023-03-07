@@ -22,27 +22,27 @@ public extension FlexType {
     var icon: String {
         switch self {
         case .camera:
-            return "camera"
+            return FlexHelper.cameraButtonImageName
         case .gallery:
-            return "photo"
+            return FlexHelper.galleryButtonImageName
         case .mic:
-            return "mic"
+            return FlexHelper.micButtonImageName
         case .custom:
-            return "paperclip"
+            return FlexHelper.customButtonImageName
         case .location:
-            return "location"
+            return FlexHelper.locationButtonImageName
         case .contacts:
-            return "person"
+            return FlexHelper.contactsButtonImageName
         }
     }
 }
 
-
+public typealias MapView = Map<_DefaultAnnotatedMapContent<[Location]>>
 public enum FlexOutput {
     case camera(Image)
     case gallery(Media)
     case mic(URL)
     case custom(String)
-    case location(Map<_DefaultAnnotatedMapContent<[Location]>>)
+    case location(MapView)
     case contacts([Contact])
 }

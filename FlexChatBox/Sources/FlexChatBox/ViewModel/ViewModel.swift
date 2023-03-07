@@ -13,7 +13,7 @@ class ViewModel: ObservableObject {
     @Published var isRecording = false
     @Published var isMicPermissionGranted: Bool?
     
-    @Published var textFieldText = ""
+    @Published var textFieldText = FlexHelper.emptyString
     @Published var showSettingsAlert = false
     @Published var presentCamera = false
     @Published var cameraStatus: Bool?
@@ -25,13 +25,11 @@ class ViewModel: ObservableObject {
         
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            cameraStatus = true
-            presentCamera = true
+            (cameraStatus, presentCamera) = (true, true)
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { (self.presentCamera, self.cameraStatus) = ($0, $0) }
         case .denied:
-            cameraStatus = false
-            showSettingsAlert = true
+            (cameraStatus, showSettingsAlert) = (false, true)
         default:
             cameraStatus = nil
             break
@@ -57,7 +55,7 @@ class ViewModel: ObservableObject {
     
     private func setupRecordingSession() {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        fileName = path.appendingPathComponent("audioRecorded.m4a")
+        fileName = path.appendingPathComponent(FlexHelper.audioFileName)
         guard let fileName else { return }
         
         let settings = [
@@ -72,9 +70,7 @@ class ViewModel: ObservableObject {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
             audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
-        } catch {
-            print("Failed to Setup the Recording")
-        }
+        } catch {}
     }
     
     func stopRecording() -> URL? {

@@ -78,36 +78,36 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
+        
         .onAppear(perform: {
             viewModel.checkCameraStatusWhenAppear()
         })
-        .foregroundColor(!(viewModel.cameraStatus ?? true) ? .gray: Color(.tintColor))
+        .foregroundColor(!(viewModel.cameraStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+        
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
+        
         .sheet(isPresented: $viewModel.presentCamera) {
             CaptureImage(capturedImage: $viewModel.capturedImage)
                 .ignoresSafeArea()
                 .onReceive(viewModel.$capturedImage) { image in
                     guard let image else { return }
                     self.flexCompletion(.camera(image))
-                    
                 }
         }
-        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+        
+        .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
             Button {
                 // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
+            } label: { Text(FlexHelper.cancelButtonTitle) }
+            
             Button {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: {
-                Text("Settings")
-            }
+            } label: { Text(FlexHelper.settingsButtonTitle) }
         } message: {
-            Text("Please click on the Settings to enable the camera permission")
+            Text(FlexHelper.cameraPermissionAlert)
         }
     }
     
@@ -136,9 +136,10 @@ public struct FlexChatView: View {
                 .onLongPressGesture(minimumDuration: 0.5) {
                     viewModel.checkMicrophoneAuthorizationStatus()
                     guard let granted = viewModel.isMicPermissionGranted, granted else { return }
-                    flexButtonName = "stop"
+                    flexButtonName = FlexHelper.recordingMicImageName
                     viewModel.startRecording()
                 }
+            
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0)
                         .onEnded { _ in
@@ -153,24 +154,23 @@ public struct FlexChatView: View {
         .onAppear(perform: {
             viewModel.checkMicPermissionWhenAppear()
         })
-        .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? .gray: Color(.tintColor))
+        .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+        
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
-        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+        
+        .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
             Button {
                 // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
+            } label: { Text(FlexHelper.cancelButtonTitle) }
+            
             Button {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: {
-                Text("Settings")
-            }
+            } label: { Text(FlexHelper.settingsButtonTitle) }
         } message: {
-            Text("Please click on the Settings to enable the micropHone permission")
+            Text(FlexHelper.microphonePermissionAlert)
         }
     }
     
@@ -181,33 +181,38 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
+        
         .onAppear(perform: {
                 locationManager.checkLocationStatusWhenAppear()
         })
-        .foregroundColor(!(locationManager.locationStatus ?? true) ? .gray: Color(.tintColor))
+        .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+        
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
+        
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
-                let map = Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude), latitudinalMeters: 1000, longitudinalMeters: 1000)), annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
+                let region = MKCoordinateRegion(center: coordinates,
+                                                 latitudinalMeters: 1000,
+                                                 longitudinalMeters: 1000)
+                let map = Map(coordinateRegion: .constant(region),
+                              annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
                 self.flexCompletion(.location(map))
             }
         })
-        .alert("Go to settings", isPresented: $locationManager.showSettingsAlert) {
+        
+        .alert(FlexHelper.goToSettings, isPresented: $locationManager.showSettingsAlert) {
             Button {
                 // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
+            } label: { Text(FlexHelper.cancelButtonTitle) }
+            
             Button {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: {
-                Text("Settings")
-            }
+            } label: { Text(FlexHelper.settingsButtonTitle) }
         } message: {
-            Text("Please click on the Settings to enable the Location permission")
+            Text(FlexHelper.locationPermissionAlert)
         }
     }
     
@@ -218,31 +223,32 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
+        
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
             .stroke(Color(.lightGray)))
+        
         .sheet(isPresented: $contacts.presentContacts, content: {
             ContactsSheet(completion: { flexCompletion(.contacts($0)) })
                 .environmentObject(contacts)
         })
+        
         .onAppear(perform: {
             contacts.checkContactsStatusWhenAppear()
         })
-        .foregroundColor(!(contacts.contactsStatus ?? true) ? .gray: Color(.tintColor))
-        .alert("Go to settings", isPresented: $contacts.showSettingsAlert) {
+        .foregroundColor(!(contacts.contactsStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+        
+        .alert(FlexHelper.goToSettings, isPresented: $contacts.showSettingsAlert) {
             Button {
                 // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
+            } label: { Text(FlexHelper.cancelButtonTitle) }
+            
             Button {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: {
-                Text("Settings")
-            }
+            } label: { Text(FlexHelper.settingsButtonTitle) }
         } message: {
-            Text("Please click on the Settings to enable the contacts permission")
+            Text(FlexHelper.contactsPermissionAlert)
         }
     }
     
@@ -264,7 +270,7 @@ public struct FlexChatView: View {
         Button(action: {
             onClickSend(viewModel.textFieldText)
         }, label: {
-            Image(systemName: "paperplane")
+            Image(systemName: FlexHelper.sendButtonImageName)
         })
         .padding(.all, 10)
         .overlay(RoundedRectangle(cornerRadius: 4)
@@ -275,22 +281,11 @@ public struct FlexChatView: View {
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
         FlexChatView(flexType: .location,
-                     placeholder: "Enter your text",
+                     placeholder: FlexHelper.textFieldPlaceholder,
                      flexCompletion: { image in
             print(image)
-        }, onClickSend: { print($0 ?? "")} )
+        }, onClickSend: { print($0 ?? FlexHelper.emptyString)} )
         .frame(maxHeight: .infinity, alignment: .bottom)
         .environmentObject(ViewModel())
-    }
-}
-
-public struct Location: Identifiable {
-    public let id = UUID()
-    let coordinates: CLLocationCoordinate2D
-}
-
-extension CLLocationCoordinate2D: Identifiable {
-    public var id: String {
-        "\(latitude)-\(longitude)"
     }
 }

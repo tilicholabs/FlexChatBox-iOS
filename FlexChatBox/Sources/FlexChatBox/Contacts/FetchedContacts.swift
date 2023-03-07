@@ -41,7 +41,7 @@ class FetchedContacts: ObservableObject, Identifiable {
             
         } catch let error {
             self.presentContacts = false
-            print("Failed to enumerate contact", error)
+            print(error.localizedDescription)
         }
     }
     
@@ -58,8 +58,7 @@ class FetchedContacts: ObservableObject, Identifiable {
                 self.fetchContacts()
             }
         case .denied:
-            showSettingsAlert = true
-            contactsStatus = false
+            (showSettingsAlert, contactsStatus) = (true, false)
         case .authorized:
             contactsStatus = true
             fetchContacts()

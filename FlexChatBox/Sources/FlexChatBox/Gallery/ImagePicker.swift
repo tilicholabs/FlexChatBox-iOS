@@ -7,16 +7,6 @@
 import SwiftUI
 import PhotosUI
 
-public struct Media {
-    public var images: [Image]
-    public var videos: [URL]
-    
-    public init(images: [Image] = [], videos: [URL] = []) {
-        self.images = images
-        self.videos = videos
-    }
-}
-
 struct Movie: Transferable {
     let url: URL
 
@@ -24,7 +14,7 @@ struct Movie: Transferable {
         FileRepresentation(contentType: .movie) { movie in
             SentTransferredFile(movie.url)
         } importing: { received in
-            let copy = URL.documentsDirectory.appending(path: UUID().uuidString + ".mp4")
+            let copy = URL.documentsDirectory.appending(path: UUID().uuidString + FlexHelper.videoExtension)
 
             if FileManager.default.fileExists(atPath: copy.path()) {
                 try FileManager.default.removeItem(at: copy)

@@ -20,7 +20,7 @@ struct SearchBar: UIViewRepresentable {
         }
         
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            if searchText != "" {
+            if searchText != FlexHelper.emptyString {
                 searchBar.showsCancelButton = true
             }
             text = searchText
@@ -28,10 +28,10 @@ struct SearchBar: UIViewRepresentable {
         }
         
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-            searchBar.text = ""
+            searchBar.text = FlexHelper.emptyString
             searchBar.resignFirstResponder()
             searchBar.showsCancelButton = false
-            text = ""
+            text = FlexHelper.emptyString
         }
         
     }

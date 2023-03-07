@@ -7,6 +7,17 @@
 
 import CoreLocation
 
+public struct Location: Identifiable {
+    public let id = UUID()
+    let coordinates: CLLocationCoordinate2D
+}
+
+extension CLLocationCoordinate2D: Identifiable {
+    public var id: String {
+        "\(latitude)-\(longitude)"
+    }
+}
+
 class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
     @Published var coordinates: CLLocationCoordinate2D?
@@ -54,8 +65,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            locationStatus = true
-            getCoordinates = true
+            (locationStatus, getCoordinates) = (true, true)
             manager.startUpdatingLocation()
         case .denied:
             locationStatus = false
