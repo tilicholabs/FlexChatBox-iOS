@@ -36,8 +36,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
             (getCoordinates, locationStatus) = (true, true)
             manager.startUpdatingLocation()
         case .denied:
-            locationStatus = false
-            showSettingsAlert = true
+            (locationStatus, showSettingsAlert) = (false, true)
         default:
             locationStatus = nil
         }

@@ -15,6 +15,7 @@ public enum FlexType {
     case mic
     case custom
     case location
+    case contacts
 }
 
 public extension FlexType {
@@ -30,6 +31,8 @@ public extension FlexType {
             return "paperclip"
         case .location:
             return "location"
+        case .contacts:
+            return "person"
         }
     }
 }
@@ -41,4 +44,5 @@ public enum FlexOutput {
     case mic(URL)
     case custom(String)
     case location(Map<_DefaultAnnotatedMapContent<[Location]>>)
+    case contacts([Contact])
 }

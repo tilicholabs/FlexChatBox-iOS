@@ -24,5 +24,6 @@ public struct FlexChatBox: View {
                      flexCompletion: flexCompletion,
                      onClickSend: onClickSend)
             .environmentObject(ViewModel())
+            .environmentObject(FetchedContacts())
     }
 }

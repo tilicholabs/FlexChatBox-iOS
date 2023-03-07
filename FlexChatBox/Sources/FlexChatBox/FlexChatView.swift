@@ -12,10 +12,13 @@ import CoreLocationUI
 
 public struct FlexChatView: View {
     
-    @FocusState private var start
     @EnvironmentObject private var viewModel: ViewModel
+    @EnvironmentObject var contacts: FetchedContacts
+    
     @StateObject var imagePicker = ImagePicker()
     @StateObject var locationManager = LocationManager.shared
+    
+    @FocusState private var start
     @State private var flexButtonName: String
     
     let flexType: FlexType
@@ -49,6 +52,8 @@ public struct FlexChatView: View {
                 cameraButton
             case .custom:
                 customButton
+            case .contacts:
+                contactsButton
             }
             
             flexSend
@@ -67,6 +72,46 @@ public struct FlexChatView: View {
     }
     
     @ViewBuilder
+    private var cameraButton: some View {
+        Button(action: {
+            viewModel.checkCameraAuthorizationStatus()
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .onAppear(perform: {
+            viewModel.checkCameraStatusWhenAppear()
+        })
+        .foregroundColor(!(viewModel.cameraStatus ?? true) ? .gray: Color(.tintColor))
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+        .sheet(isPresented: $viewModel.presentCamera) {
+            CaptureImage(capturedImage: $viewModel.capturedImage)
+                .ignoresSafeArea()
+                .onReceive(viewModel.$capturedImage) { image in
+                    guard let image else { return }
+                    self.flexCompletion(.camera(image))
+                    
+                }
+        }
+        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the camera permission")
+        }
+    }
+    
+    @ViewBuilder
     private var photosPicker: some View {
         PhotosPicker(selection: $imagePicker.imageSelections,
                      maxSelectionCount: 10,
@@ -80,19 +125,6 @@ public struct FlexChatView: View {
                      .onReceive(imagePicker.$media) {
                          self.flexCompletion(.gallery($0))
                      }
-    }
-    
-    @ViewBuilder
-    private var customButton: some View {
-        Button(action: {
-            // Custom button action
-            print("Custom button is not initialised")
-        }, label: {
-            Image(systemName: flexType.icon)
-        })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
     }
     
     @ViewBuilder
@@ -138,47 +170,7 @@ public struct FlexChatView: View {
                 Text("Settings")
             }
         } message: {
-            Text("Please click on the Settings to enable the camera permission")
-        }
-    }
-    
-    @ViewBuilder
-    private var cameraButton: some View {
-        Button(action: {
-            viewModel.checkCameraAuthorizationStatus()
-        }, label: {
-            Image(systemName: flexType.icon)
-        })
-        .onAppear(perform: {
-            viewModel.checkCameraStatusWhenAppear()
-        })
-        .foregroundColor(!(viewModel.cameraStatus ?? true) ? .gray: Color(.tintColor))
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
-        .sheet(isPresented: $viewModel.presentCamera) {
-            CaptureImage(capturedImage: $viewModel.capturedImage)
-                .ignoresSafeArea()
-                .onReceive(viewModel.$capturedImage) { image in
-                    guard let image else { return }
-                    self.flexCompletion(.camera(image))
-                    
-                }
-        }
-        .alert("Go to settings", isPresented: $viewModel.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: {
-                Text("Cancel")
-            }
-            Button {
-                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-                UIApplication.shared.open(url)
-            } label: {
-                Text("Settings")
-            }
-        } message: {
-            Text("Please click on the Settings to enable the camera permission")
+            Text("Please click on the Settings to enable the micropHone permission")
         }
     }
     
@@ -217,6 +209,54 @@ public struct FlexChatView: View {
         } message: {
             Text("Please click on the Settings to enable the Location permission")
         }
+    }
+    
+    @ViewBuilder
+    private var contactsButton: some View {
+        Button(action: {
+            contacts.checkAuthorizationStatus()
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+        .sheet(isPresented: $contacts.presentContacts, content: {
+            ContactsSheet(completion: { flexCompletion(.contacts($0)) })
+                .environmentObject(contacts)
+        })
+        .onAppear(perform: {
+            contacts.checkContactsStatusWhenAppear()
+        })
+        .foregroundColor(!(contacts.contactsStatus ?? true) ? .gray: Color(.tintColor))
+        .alert("Go to settings", isPresented: $contacts.showSettingsAlert) {
+            Button {
+                // nothing needed here
+            } label: {
+                Text("Cancel")
+            }
+            Button {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            } label: {
+                Text("Settings")
+            }
+        } message: {
+            Text("Please click on the Settings to enable the contacts permission")
+        }
+    }
+    
+    @ViewBuilder
+    private var customButton: some View {
+        Button(action: {
+            // Custom button action
+            print("Custom button is not initialised")
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
     }
     
     @ViewBuilder
