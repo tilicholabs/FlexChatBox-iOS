@@ -16,6 +16,7 @@ public enum FlexType {
     case custom
     case location
     case contacts
+    case files
 }
 
 public extension FlexType {
@@ -33,6 +34,8 @@ public extension FlexType {
             return FlexHelper.locationButtonImageName
         case .contacts:
             return FlexHelper.contactsButtonImageName
+        case .files:
+            return FlexHelper.filesButtonImageName
         }
     }
 }
@@ -45,4 +48,5 @@ public enum FlexOutput {
     case custom(String)
     case location(MapView)
     case contacts([Contact])
+    case files([URL])
 }

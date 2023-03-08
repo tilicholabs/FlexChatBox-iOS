@@ -20,6 +20,7 @@ public struct FlexChatView: View {
     
     @FocusState private var start
     @State private var flexButtonName: String
+    @State private var isPresentFiles = false
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
@@ -42,18 +43,20 @@ public struct FlexChatView: View {
             flexTextField
             
             switch flexType {
+            case .camera:
+                cameraButton
             case .gallery:
                 photosPicker
             case .mic:
                 micButton
             case .location:
                 locationButton
-            case .camera:
-                cameraButton
-            case .custom:
-                customButton
             case .contacts:
                 contactsButton
+            case .files:
+                filesButton
+            case .custom:
+                customButton
             }
             
             flexSend
@@ -183,7 +186,7 @@ public struct FlexChatView: View {
         })
         
         .onAppear(perform: {
-                locationManager.checkLocationStatusWhenAppear()
+            locationManager.checkLocationStatusWhenAppear()
         })
         .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
@@ -194,8 +197,8 @@ public struct FlexChatView: View {
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
                 let region = MKCoordinateRegion(center: coordinates,
-                                                 latitudinalMeters: 1000,
-                                                 longitudinalMeters: 1000)
+                                                latitudinalMeters: 1000,
+                                                longitudinalMeters: 1000)
                 let map = Map(coordinateRegion: .constant(region),
                               annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
                 self.flexCompletion(.location(map))
@@ -250,6 +253,28 @@ public struct FlexChatView: View {
         } message: {
             Text(FlexHelper.contactsPermissionAlert)
         }
+    }
+    
+    @ViewBuilder
+    private var filesButton: some View {
+        Button(action: {
+            isPresentFiles.toggle()
+        }, label: {
+            Image(systemName: flexType.icon)
+        })
+        .padding(.all, 10)
+        .overlay(RoundedRectangle(cornerRadius: 4)
+            .stroke(Color(.lightGray)))
+        .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true, onCompletion: { result in
+            do {
+                let fileURLs = try result.get()
+                DispatchQueue.main.async {
+                    flexCompletion(.files(fileURLs))
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        })
     }
     
     @ViewBuilder

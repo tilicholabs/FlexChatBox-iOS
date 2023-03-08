@@ -39,6 +39,7 @@ public enum FlexHelper {
     static let customButtonImageName = "paperclip"
     static let locationButtonImageName = "location"
     static let contactsButtonImageName = "person"
+    static let filesButtonImageName = "doc"
     
     static let videoExtension = ".mp4"
     static let audioFileName = "audioRecorded.m4a"
