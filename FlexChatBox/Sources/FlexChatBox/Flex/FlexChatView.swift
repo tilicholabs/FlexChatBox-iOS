@@ -21,6 +21,8 @@ public struct FlexChatView: View {
     @FocusState private var start
     @State private var flexButtonName: String
     @State private var isPresentFiles = false
+    @State private var timer: Timer?
+    @State private var elapsedTime = 0
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
@@ -39,29 +41,37 @@ public struct FlexChatView: View {
     }
     
     public var body: some View {
-        HStack(alignment: .bottom, spacing: 12.0) {
-            flexTextField
-            
-            switch flexType {
-            case .camera:
-                cameraButton
-            case .gallery:
-                photosPicker
-            case .mic:
-                micButton
-            case .location:
-                locationButton
-            case .contacts:
-                contactsButton
-            case .files:
-                filesButton
-            case .custom:
-                customButton
+            HStack {
+                if viewModel.isMicPermissionGranted ?? false, viewModel.isRecording {
+                    HStack(spacing: 20) {
+                        Image(systemName: "mic.fill")
+                        Text("Recording Audio")
+                        Text(formatTime(elapsedTime))
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    flexTextField
+                }
+                
+                switch flexType {
+                case .camera:
+                    cameraButton
+                case .gallery:
+                    photosPicker
+                case .mic:
+                    micButton
+                case .location:
+                    locationButton
+                case .contacts:
+                    contactsButton
+                case .files:
+                    filesButton
+                case .custom:
+                    customButton
+                }
+                
+                flexSend
             }
-            
-            flexSend
-        }
-        .padding(.all, 8.0)
     }
     
     @ViewBuilder
@@ -69,7 +79,7 @@ public struct FlexChatView: View {
         TextField(textFieldPlaceHolder, text: $viewModel.textFieldText, axis: .vertical)
             .padding(.all, 8.0)
             .lineLimit(0...4)
-            .overlay(RoundedRectangle(cornerRadius: 4)
+            .overlay(RoundedRectangle(cornerRadius: 8)
                 .stroke(Color(start ? .tintColor: .lightGray)))
             .focused($start)
     }
@@ -88,8 +98,6 @@ public struct FlexChatView: View {
         .foregroundColor(!(viewModel.cameraStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
         .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
         
         .sheet(isPresented: $viewModel.presentCamera) {
             CaptureImage(capturedImage: $viewModel.capturedImage)
@@ -123,8 +131,6 @@ public struct FlexChatView: View {
             Image(systemName: flexType.icon)
         }
                      .padding(.all, 10)
-                     .overlay(RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color(.lightGray)))
                      .onReceive(imagePicker.$media) {
                          self.flexCompletion(.gallery($0))
                      }
@@ -140,6 +146,7 @@ public struct FlexChatView: View {
                     viewModel.checkMicrophoneAuthorizationStatus()
                     guard let granted = viewModel.isMicPermissionGranted, granted else { return }
                     flexButtonName = FlexHelper.recordingMicImageName
+                    startTimer()
                     viewModel.startRecording()
                 }
             
@@ -149,6 +156,7 @@ public struct FlexChatView: View {
                             if viewModel.isRecording,
                                let recordedAudio = viewModel.stopRecording() {
                                 flexButtonName = flexType.icon
+                                stopTimer()
                                 flexCompletion(.mic(recordedAudio))
                             }
                         }
@@ -160,8 +168,6 @@ public struct FlexChatView: View {
         .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
         .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
         
         .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
             Button {
@@ -191,8 +197,6 @@ public struct FlexChatView: View {
         .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
         .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
         
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
@@ -228,8 +232,6 @@ public struct FlexChatView: View {
         })
         
         .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
         
         .sheet(isPresented: $contacts.presentContacts, content: {
             ContactsSheet(completion: { flexCompletion(.contacts($0)) })
@@ -262,9 +264,8 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
+        
         .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true, onCompletion: { result in
             do {
                 let fileURLs = try result.get()
@@ -286,8 +287,6 @@ public struct FlexChatView: View {
             Image(systemName: flexType.icon)
         })
         .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
     }
     
     @ViewBuilder
@@ -297,9 +296,25 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: FlexHelper.sendButtonImageName)
         })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
+    }
+    
+    func formatTime(_ time: Int) -> String {
+        let minutes = time / 60
+        let seconds = time % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            elapsedTime += 1
+        }
+    }
+       
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        elapsedTime = 0
     }
 }
 
