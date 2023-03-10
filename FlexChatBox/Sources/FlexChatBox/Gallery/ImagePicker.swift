@@ -29,36 +29,37 @@ struct Movie: Transferable {
 @MainActor
 class ImagePicker: ObservableObject {
     @Published var media = Media()
+    @Published var onCompletion: ((Media) -> Void)?
     @Published var imageSelections: [PhotosPickerItem] = [] {
         didSet {
             Task {
                 if !imageSelections.isEmpty {
                     try await loadTransferable(from: imageSelections)
-                    imageSelections = []
                 }
             }
         }
     }
     
     func loadTransferable(from imageSelections: [PhotosPickerItem]) async throws {
-        do {
-            media.images.removeAll()
-            media.videos.removeAll()
-            for imageSelection in imageSelections {
-                if imageSelection.supportedContentTypes[0].isSubtype(of: .movie) {
+        media.images.removeAll()
+        media.videos.removeAll()
+        for imageSelection in imageSelections {
+            if imageSelection.supportedContentTypes[0].isSubtype(of: .movie) {
+                do {
                     if let movie = try await imageSelection.loadTransferable(type: Movie.self) {
                         media.videos.append(movie.url)
                     }
-                } else {
+                } catch {}
+            } else {
+                do {
                     if let data = try await imageSelection.loadTransferable(type: Data.self) {
                         if let uiImage = UIImage(data: data) {
                             media.images.append(Image(uiImage: uiImage))
                         }
                     }
-                }
+                } catch {}
             }
-        } catch {
-            print(error.localizedDescription)
         }
+        onCompletion?(media)
     }
 }

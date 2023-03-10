@@ -12,6 +12,10 @@ import CoreLocationUI
 
 public struct FlexChatView: View {
     
+    @State var media: Media?
+    @State var showPreview = false
+    @State var showPicker = false
+    
     @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject var contacts: FetchedContacts
     
@@ -125,9 +129,39 @@ public struct FlexChatView: View {
                      .padding(.all, 10)
                      .overlay(RoundedRectangle(cornerRadius: 4)
                         .stroke(Color(.lightGray)))
-                     .onReceive(imagePicker.$media) {
-                         self.flexCompletion(.gallery($0))
+                     .sheet(isPresented: $showPreview, onDismiss: {
+                         self.showPreview = false
+                     }) {
+                         if let media {
+                             GalleryPreview(media: media) { showPicker, selectedMedia in
+                                 if showPicker {
+                                     DispatchQueue.main.async {
+                                         self.showPicker = true
+                                     }
+                                 } else {
+                                     if let selectedMedia {
+                                         self.flexCompletion(.gallery(selectedMedia))
+                                     }
+                                     imagePicker.imageSelections.removeAll()
+                                 }
+                             }
+                         } else {
+                             Text("No media")
+                         }
                      }
+                     .onAppear {
+                         self.imagePicker.onCompletion = { selectedMedia in
+                             DispatchQueue.main.async {
+                                 self.media = selectedMedia
+                                 self.showPreview = true
+                             }
+                         }
+                     }
+                     .photosPicker(isPresented: $showPicker,
+                                   selection: $imagePicker.imageSelections,
+                                   maxSelectionCount: 10,
+                                   matching: .any(of: [.images, .videos]),
+                                   photoLibrary: .shared())
     }
     
     @ViewBuilder
