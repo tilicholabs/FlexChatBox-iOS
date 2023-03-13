@@ -20,6 +20,8 @@ class ViewModel: ObservableObject {
     @Published var cameraStatus: Bool?
     @Published var capturedImage: Image?
     @Published var coordinates: CLLocationCoordinate2D?
+    @Published private var elapsedTime = 0
+    @State private var timer: Timer?
     
     func checkCameraAuthorizationStatus() {
         showSettingsAlert = false
@@ -51,13 +53,14 @@ class ViewModel: ObservableObject {
     func startRecording() {
         setupRecordingSession()
         audioRecorder?.prepareToRecord()
+        startTimer()
         audioRecorder?.record()
         isRecording = true
     }
     
     private func setupRecordingSession() {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        fileName = path.appendingPathComponent(FlexHelper.audioFileName)
+        fileName = path.appendingPathComponent(UUID().uuidString + ".m4a")
         guard let fileName else { return }
         
         let settings = [
@@ -76,6 +79,7 @@ class ViewModel: ObservableObject {
     }
     
     func stopRecording() -> URL? {
+        stopTimer()
         audioRecorder?.stop()
         isRecording = false
         return fileName
@@ -104,5 +108,23 @@ class ViewModel: ObservableObject {
         default:
             isMicPermissionGranted = nil
         }
+    }
+    
+    func formatTime() -> String {
+        let minutes = elapsedTime / 60
+        let seconds = elapsedTime % 60
+        return String(format: FlexHelper.recordingTimeFormat, minutes, seconds)
+    }
+    
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            self.elapsedTime += 1
+        }
+    }
+       
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        elapsedTime = 0
     }
 }

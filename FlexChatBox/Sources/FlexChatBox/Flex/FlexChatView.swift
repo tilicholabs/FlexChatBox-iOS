@@ -44,29 +44,37 @@ public struct FlexChatView: View {
     }
     
     public var body: some View {
-        HStack(alignment: .bottom, spacing: 12.0) {
-            flexTextField
-            
-            switch flexType {
-            case .camera:
-                cameraButton
-            case .gallery:
-                photosPicker
-            case .mic:
-                micButton
-            case .location:
-                locationButton
-            case .contacts:
-                contactsButton
-            case .files:
-                filesButton
-            case .custom:
-                customButton
+            HStack {
+                if viewModel.isRecording {
+                    HStack {
+                        Image(systemName: FlexHelper.recordingAudioImageName)
+                        Text(FlexHelper.recordingAudio)
+                        Text(viewModel.formatTime())
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    flexTextField
+                }
+                
+                switch flexType {
+                case .camera:
+                    cameraButton
+                case .gallery:
+                    photosPicker
+                case .mic:
+                    micButton
+                case .location:
+                    locationButton
+                case .contacts:
+                    contactsButton
+                case .files:
+                    filesButton
+                case .custom:
+                    customButton
+                }
+                
+                flexSend
             }
-            
-            flexSend
-        }
-        .padding(.all, 8.0)
     }
     
     @ViewBuilder
@@ -74,7 +82,7 @@ public struct FlexChatView: View {
         TextField(textFieldPlaceHolder, text: $viewModel.textFieldText, axis: .vertical)
             .padding(.all, 8.0)
             .lineLimit(0...4)
-            .overlay(RoundedRectangle(cornerRadius: 4)
+            .overlay(RoundedRectangle(cornerRadius: 8)
                 .stroke(Color(start ? .tintColor: .lightGray)))
             .focused($start)
     }
@@ -92,9 +100,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(viewModel.cameraStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
         
         .sheet(isPresented: $viewModel.presentCamera) {
             CaptureImage(capturedImage: $viewModel.capturedImage)
@@ -194,9 +200,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
         
         .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
             Button {
@@ -225,9 +229,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
         
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
@@ -273,9 +275,7 @@ public struct FlexChatView: View {
             Image(systemName: flexType.icon)
         })
         
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
         
         .sheet(isPresented: $contacts.presentContacts, content: {
             ContactsSheet(completion: { flexCompletion(.contacts($0)) })
@@ -308,9 +308,8 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
+        
         .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true, onCompletion: { result in
             do {
                 let fileURLs = try result.get()
@@ -331,9 +330,7 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
     }
     
     @ViewBuilder
@@ -343,9 +340,7 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: FlexHelper.sendButtonImageName)
         })
-        .padding(.all, 10)
-        .overlay(RoundedRectangle(cornerRadius: 4)
-            .stroke(Color(.lightGray)))
+        .padding(.all, 5)
     }
 }
 
