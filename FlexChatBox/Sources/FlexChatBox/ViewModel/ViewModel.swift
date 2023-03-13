@@ -19,6 +19,7 @@ class ViewModel: ObservableObject {
     @Published var presentCamera = false
     @Published var cameraStatus: Bool?
     @Published var capturedImage: Image?
+    @Published var videoURL: URL?
     @Published var coordinates: CLLocationCoordinate2D?
     @Published private var elapsedTime = 0
     @State private var timer: Timer?
@@ -31,7 +32,10 @@ class ViewModel: ObservableObject {
         case .authorized:
             (cameraStatus, presentCamera) = (true, true)
         case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { (self.presentCamera, self.cameraStatus) = ($0, $0) }
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    (self.presentCamera, self.cameraStatus) = (granted, granted)
+                }}
         case .denied:
             (cameraStatus, showSettingsAlert) = (false, true)
         default:

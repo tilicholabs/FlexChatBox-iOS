@@ -49,4 +49,5 @@ public enum FlexOutput {
     case location(MapView)
     case contacts([Contact])
     case files([URL])
+    case video(URL)
 }

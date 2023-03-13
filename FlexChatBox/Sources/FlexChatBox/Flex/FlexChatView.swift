@@ -44,37 +44,37 @@ public struct FlexChatView: View {
     }
     
     public var body: some View {
-            HStack {
-                if viewModel.isRecording {
-                    HStack {
-                        Image(systemName: FlexHelper.recordingAudioImageName)
-                        Text(FlexHelper.recordingAudio)
-                        Text(viewModel.formatTime())
-                    }
-                    .frame(maxWidth: .infinity)
-                } else {
-                    flexTextField
+        HStack {
+            if viewModel.isRecording {
+                HStack {
+                    Image(systemName: FlexHelper.recordingAudioImageName)
+                    Text(FlexHelper.recordingAudio)
+                    Text(viewModel.formatTime())
                 }
-                
-                switch flexType {
-                case .camera:
-                    cameraButton
-                case .gallery:
-                    photosPicker
-                case .mic:
-                    micButton
-                case .location:
-                    locationButton
-                case .contacts:
-                    contactsButton
-                case .files:
-                    filesButton
-                case .custom:
-                    customButton
-                }
-                
-                flexSend
+                .frame(maxWidth: .infinity)
+            } else {
+                flexTextField
             }
+            
+            switch flexType {
+            case .camera:
+                cameraButton
+            case .gallery:
+                photosPicker
+            case .mic:
+                micButton
+            case .location:
+                locationButton
+            case .contacts:
+                contactsButton
+            case .files:
+                filesButton
+            case .custom:
+                customButton
+            }
+            
+            flexSend
+        }
     }
     
     @ViewBuilder
@@ -103,11 +103,15 @@ public struct FlexChatView: View {
         .padding(.all, 5)
         
         .sheet(isPresented: $viewModel.presentCamera) {
-            CaptureImage(capturedImage: $viewModel.capturedImage)
+            CaptureImage(capturedImage: $viewModel.capturedImage, videoURL: $viewModel.videoURL)
                 .ignoresSafeArea()
                 .onReceive(viewModel.$capturedImage) { image in
                     guard let image else { return }
                     self.flexCompletion(.camera(image))
+                }
+                .onReceive(viewModel.$videoURL) { url in
+                    guard let url else { return }
+                    self.flexCompletion(.video(url))
                 }
         }
         
