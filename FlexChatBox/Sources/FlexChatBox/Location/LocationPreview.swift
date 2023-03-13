@@ -1,6 +1,6 @@
 //
 //  LocationPreview.swift
-//  
+//
 //
 //  Created by Aditya Kumar Bodapati on 10/03/23.
 //
@@ -13,7 +13,7 @@ struct LocationPreview: View {
     
     @Environment(\.presentationMode) private var presentationMode
     let coordinates: CLLocationCoordinate2D
-    let onCompletion: (MapView?) -> Void
+    let onCompletion: (URL?) -> Void
     
     var body: some View {
         let region = MKCoordinateRegion(center: coordinates,
@@ -40,7 +40,9 @@ struct LocationPreview: View {
                 Spacer()
                 
                 Button(action: {
-                    onCompletion(map)
+                    if let url = URL(string: "https://www.google.com/maps/?q=\(coordinates.latitude),\(coordinates.longitude)") {
+                        onCompletion(url)
+                    }
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Image(systemName: "checkmark.circle")

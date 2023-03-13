@@ -266,9 +266,9 @@ public struct FlexChatView: View {
         }
         .sheet(isPresented: $showLocationPreview) {
             if let coordinates = viewModel.coordinates {
-                LocationPreview(coordinates: coordinates) { map in
-                    if let map {
-                        self.flexCompletion(.location(map))
+                LocationPreview(coordinates: coordinates) { url in
+                    if let url {
+                        self.flexCompletion(.location(url))
                     }
                     locationManager.getCoordinates = false
                 }

@@ -30,6 +30,15 @@ struct GalleryPreview: View {
     var body: some View {
         VStack {
             HStack(spacing: 20) {
+                Button(action: {
+                    onCompletion(false, nil)
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                })
+                
                 Spacer()
                 
                 if images.count + videos.count > 1 {
@@ -47,17 +56,8 @@ struct GalleryPreview: View {
                             .frame(width: 20, height: 20)
                     })
                 }
-                
-                Button(action: {
-                    onCompletion(false, nil)
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                })
             }
-            .padding(.trailing, 20)
+            .padding(.horizontal, 20)
             .padding(.top, 20)
             
             carouselView
@@ -138,60 +138,20 @@ struct GalleryPreview: View {
     private var tabView: some View {
         TabView(selection: $index) {
             ForEach(0..<images.count, id: \.self) { index in
-                ZStack {
-                    GeometryReader { geometry in
-                        images[index]
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: geometry.size.width)
-                    }
-                    
-                    HStack {
-                        Spacer()
-                        
-                        VStack {
-                            Button(action: {
-                                // delete image/video
-                            }, label: {
-                                Image(systemName: "xmark.bin")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                            })
-                            
-                            Spacer()
-                        }
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
+                GeometryReader { geometry in
+                    images[index]
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: geometry.size.width)
                 }
             }
             
             ForEach(images.count..<videos.count + images.count, id: \.self) { index in
-                ZStack {
-                    GeometryReader { geometry in
-                        VideoPlayer(player: AVPlayer(url: videos[index - images.count]))
-                            .scaledToFit()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: geometry.size.width)
-                    }
-                    
-                    HStack {
-                        Spacer()
-                        
-                        VStack {
-                            Button(action: {
-                                // delete image/video
-                            }, label: {
-                                Image(systemName: "xmark.bin")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                            })
-                            
-                            Spacer()
-                        }
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
+                GeometryReader { geometry in
+                    VideoPlayer(player: AVPlayer(url: videos[index - images.count]))
+                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: geometry.size.width)
                 }
             }
             

@@ -40,13 +40,12 @@ public extension FlexType {
     }
 }
 
-public typealias MapView = Map<_DefaultAnnotatedMapContent<[Location]>>
 public enum FlexOutput {
     case camera(Image)
     case gallery(Media)
     case mic(URL)
     case custom(String)
-    case location(MapView)
+    case location(URL)
     case contacts([Contact])
     case files([URL])
     case video(URL)
