@@ -21,8 +21,6 @@ public struct FlexChatView: View {
     @FocusState private var start
     @State private var flexButtonName: String
     @State private var isPresentFiles = false
-    @State private var timer: Timer?
-    @State private var elapsedTime = 0
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
@@ -42,11 +40,11 @@ public struct FlexChatView: View {
     
     public var body: some View {
             HStack {
-                if viewModel.isMicPermissionGranted ?? false, viewModel.isRecording {
-                    HStack(spacing: 20) {
-                        Image(systemName: "mic.fill")
-                        Text("Recording Audio")
-                        Text(formatTime(elapsedTime))
+                if viewModel.isRecording {
+                    HStack {
+                        Image(systemName: FlexHelper.recordingAudioImageName)
+                        Text(FlexHelper.recordingAudio)
+                        Text(viewModel.formatTime())
                     }
                     .frame(maxWidth: .infinity)
                 } else {
@@ -97,7 +95,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(viewModel.cameraStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
+        .padding(.all, 5)
         
         .sheet(isPresented: $viewModel.presentCamera) {
             CaptureImage(capturedImage: $viewModel.capturedImage)
@@ -146,7 +144,6 @@ public struct FlexChatView: View {
                     viewModel.checkMicrophoneAuthorizationStatus()
                     guard let granted = viewModel.isMicPermissionGranted, granted else { return }
                     flexButtonName = FlexHelper.recordingMicImageName
-                    startTimer()
                     viewModel.startRecording()
                 }
             
@@ -156,7 +153,6 @@ public struct FlexChatView: View {
                             if viewModel.isRecording,
                                let recordedAudio = viewModel.stopRecording() {
                                 flexButtonName = flexType.icon
-                                stopTimer()
                                 flexCompletion(.mic(recordedAudio))
                             }
                         }
@@ -167,7 +163,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
+        .padding(.all, 5)
         
         .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
             Button {
@@ -196,7 +192,7 @@ public struct FlexChatView: View {
         })
         .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 10)
+        .padding(.all, 5)
         
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
@@ -231,7 +227,7 @@ public struct FlexChatView: View {
             Image(systemName: flexType.icon)
         })
         
-        .padding(.all, 10)
+        .padding(.all, 5)
         
         .sheet(isPresented: $contacts.presentContacts, content: {
             ContactsSheet(completion: { flexCompletion(.contacts($0)) })
@@ -286,7 +282,7 @@ public struct FlexChatView: View {
         }, label: {
             Image(systemName: flexType.icon)
         })
-        .padding(.all, 10)
+        .padding(.all, 5)
     }
     
     @ViewBuilder
@@ -297,24 +293,6 @@ public struct FlexChatView: View {
             Image(systemName: FlexHelper.sendButtonImageName)
         })
         .padding(.all, 5)
-    }
-    
-    func formatTime(_ time: Int) -> String {
-        let minutes = time / 60
-        let seconds = time % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-    
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            elapsedTime += 1
-        }
-    }
-       
-    func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-        elapsedTime = 0
     }
 }
 

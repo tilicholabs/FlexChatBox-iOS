@@ -20,6 +20,7 @@ public enum FlexHelper {
     static let settingsButtonTitle = "Settings"
     
     static let goToSettings = "Go to settings"
+    static let recordingAudio = "Recording Audio..."
     
     static let contactsTitle = "Contacts"
     
@@ -40,7 +41,9 @@ public enum FlexHelper {
     static let locationButtonImageName = "location"
     static let contactsButtonImageName = "person"
     static let filesButtonImageName = "doc"
+    static let recordingAudioImageName = "mic.fill"
     
     static let videoExtension = ".mp4"
     static let audioFileName = "audioRecorded.m4a"
+    static let recordingTimeFormat = "%02d:%02d"
 }
