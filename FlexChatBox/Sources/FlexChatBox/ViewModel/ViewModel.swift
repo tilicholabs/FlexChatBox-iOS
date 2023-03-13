@@ -6,6 +6,7 @@
 
 import SwiftUI
 import AVFoundation
+import CoreLocation
 
 class ViewModel: ObservableObject {
     private var audioRecorder: AVAudioRecorder?
@@ -18,6 +19,7 @@ class ViewModel: ObservableObject {
     @Published var presentCamera = false
     @Published var cameraStatus: Bool?
     @Published var capturedImage: Image?
+    @Published var coordinates: CLLocationCoordinate2D?
     
     func checkCameraAuthorizationStatus() {
         showSettingsAlert = false

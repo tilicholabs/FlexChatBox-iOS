@@ -7,15 +7,16 @@
 
 import SwiftUI
 import PhotosUI
-import MapKit
 import CoreLocationUI
 
 public struct FlexChatView: View {
     
     @State var media: Media?
-    @State var showPreview = false
+    @State var showGalleryPreview = false
+    @State var showLocationPreview = false
     @State var showPicker = false
     
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject var contacts: FetchedContacts
     
@@ -39,7 +40,7 @@ public struct FlexChatView: View {
         self.textFieldPlaceHolder = placeholder
         self.flexCompletion = flexCompletion
         self.onClickSend = onClickSend
-        flexButtonName = flexType.icon
+        _flexButtonName = State(initialValue: flexType.icon)
     }
     
     public var body: some View {
@@ -129,8 +130,8 @@ public struct FlexChatView: View {
                      .padding(.all, 10)
                      .overlay(RoundedRectangle(cornerRadius: 4)
                         .stroke(Color(.lightGray)))
-                     .sheet(isPresented: $showPreview, onDismiss: {
-                         self.showPreview = false
+                     .sheet(isPresented: $showGalleryPreview, onDismiss: {
+                         self.showGalleryPreview = false
                      }) {
                          if let media {
                              GalleryPreview(media: media) { showPicker, selectedMedia in
@@ -153,7 +154,7 @@ public struct FlexChatView: View {
                          self.imagePicker.onCompletion = { selectedMedia in
                              DispatchQueue.main.async {
                                  self.media = selectedMedia
-                                 self.showPreview = true
+                                 self.showGalleryPreview = true
                              }
                          }
                      }
@@ -230,12 +231,8 @@ public struct FlexChatView: View {
         
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
             if isGranted, let coordinates = locationManager.coordinates {
-                let region = MKCoordinateRegion(center: coordinates,
-                                                latitudinalMeters: 1000,
-                                                longitudinalMeters: 1000)
-                let map = Map(coordinateRegion: .constant(region),
-                              annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
-                self.flexCompletion(.location(map))
+                showLocationPreview = true
+                viewModel.coordinates = coordinates
             }
         })
         
@@ -250,6 +247,21 @@ public struct FlexChatView: View {
             } label: { Text(FlexHelper.settingsButtonTitle) }
         } message: {
             Text(FlexHelper.locationPermissionAlert)
+        }
+        .sheet(isPresented: $showLocationPreview) {
+            if let coordinates = viewModel.coordinates {
+                LocationPreview(coordinates: coordinates) { map in
+                    if let map {
+                        self.flexCompletion(.location(map))
+                    }
+                    locationManager.getCoordinates = false
+                }
+            } else {
+                Text("")
+                    .onAppear {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+            }
         }
     }
     
