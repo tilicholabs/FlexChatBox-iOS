@@ -133,9 +133,7 @@ public struct FlexChatView: View {
                      photoLibrary: .shared()) {
             Image(systemName: flexType.icon)
         }
-                     .padding(.all, 10)
-                     .overlay(RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color(.lightGray)))
+                     .padding(.all, 5)
                      .sheet(isPresented: $showGalleryPreview, onDismiss: {
                          self.showGalleryPreview = false
                      }) {
@@ -143,6 +141,11 @@ public struct FlexChatView: View {
                              GalleryPreview(media: media) { showPicker, selectedMedia in
                                  if showPicker {
                                      DispatchQueue.main.async {
+                                         if let selectedMedia,
+                                            let images = selectedMedia.images as? [PhotosPickerItem],
+                                            let videos = selectedMedia.videos as? [PhotosPickerItem] {
+                                             self.imagePicker.imageSelections = images + videos
+                                         }
                                          self.showPicker = true
                                      }
                                  } else {
@@ -169,6 +172,13 @@ public struct FlexChatView: View {
                                    maxSelectionCount: 10,
                                    matching: .any(of: [.images, .videos]),
                                    photoLibrary: .shared())
+                     .onChange(of: showPicker) {
+                         if !$0 {
+                             DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                                 imagePicker.onCompletion?(imagePicker.media)
+                             }
+                         }
+                     }
     }
     
     @ViewBuilder
@@ -227,7 +237,7 @@ public struct FlexChatView: View {
         .onAppear(perform: {
             locationManager.checkLocationStatusWhenAppear()
         })
-        .foregroundColor(!(locationManager.locationStatus ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+        .foregroundColor((locationManager.locationStatus ?? true) ? FlexHelper.enabledButtonColor: FlexHelper.disabledButtonColor)
         
         .padding(.all, 5)
         

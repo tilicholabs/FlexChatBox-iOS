@@ -32,7 +32,7 @@ struct GalleryPreview: View {
             HStack(spacing: 20) {
                 Spacer()
                 
-                if images.count > 1 || videos.count > 1 {
+                if images.count + videos.count > 1 {
                     Button(action: {
                         if index < images.count {
                             print(index)
