@@ -20,7 +20,7 @@ class ViewModel: ObservableObject {
     @Published var cameraStatus: Bool?
     @Published var capturedImage: Image?
     @Published var videoURL: URL?
-    @Published var coordinates: CLLocationCoordinate2D?
+    @Published var location: Location?
     @Published private var elapsedTime = 0
     @State private var timer: Timer?
     

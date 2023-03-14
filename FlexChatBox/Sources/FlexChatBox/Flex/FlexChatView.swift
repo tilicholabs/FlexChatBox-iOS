@@ -246,9 +246,9 @@ public struct FlexChatView: View {
         .padding(.all, 5)
         
         .onReceive(locationManager.$getCoordinates, perform: { isGranted in
-            if isGranted, let coordinates = locationManager.coordinates {
+            if isGranted, let location = locationManager.location {
                 showLocationPreview = true
-                viewModel.coordinates = coordinates
+                viewModel.location = location
             }
         })
         
@@ -265,10 +265,10 @@ public struct FlexChatView: View {
             Text(FlexHelper.locationPermissionAlert)
         }
         .sheet(isPresented: $showLocationPreview) {
-            if let coordinates = viewModel.coordinates {
-                LocationPreview(coordinates: coordinates) { url in
-                    if let url {
-                        self.flexCompletion(.location(url))
+            if let location = viewModel.location {
+                LocationPreview(location: location) { location in
+                    if let location {
+                        self.flexCompletion(.location(location))
                     }
                     locationManager.getCoordinates = false
                 }

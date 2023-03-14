@@ -7,9 +7,13 @@
 
 import CoreLocation
 
-public struct Location: Identifiable {
-    public let id = UUID()
-    let coordinates: CLLocationCoordinate2D
+public struct Location {
+    public let coordinate: CLLocationCoordinate2D
+    public let altitude: Double
+    
+    public var url: URL {
+        URL(string: "https://www.google.com/maps/?q=\(coordinate.latitude),\(coordinate.longitude)")!
+    }
 }
 
 extension CLLocationCoordinate2D: Identifiable {
@@ -20,7 +24,7 @@ extension CLLocationCoordinate2D: Identifiable {
 
 class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
-    @Published var coordinates: CLLocationCoordinate2D?
+    @Published var location: Location?
     @Published var showSettingsAlert = false
     @Published var getCoordinates = false
     @Published var locationStatus: Bool?
@@ -77,7 +81,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        self.coordinates = location.coordinate
+        self.location = Location(coordinate: location.coordinate, altitude: location.altitude)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

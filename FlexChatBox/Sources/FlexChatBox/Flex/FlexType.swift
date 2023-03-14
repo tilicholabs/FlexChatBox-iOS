@@ -45,7 +45,7 @@ public enum FlexOutput {
     case gallery(Media)
     case mic(URL)
     case custom(String)
-    case location(URL)
+    case location(Location)
     case contacts([Contact])
     case files([URL])
     case video(URL)

@@ -12,15 +12,15 @@ import MapKit
 struct LocationPreview: View {
     
     @Environment(\.presentationMode) private var presentationMode
-    let coordinates: CLLocationCoordinate2D
-    let onCompletion: (URL?) -> Void
+    let location: Location
+    let onCompletion: (Location?) -> Void
     
     var body: some View {
-        let region = MKCoordinateRegion(center: coordinates,
+        let region = MKCoordinateRegion(center: location.coordinate,
                                         latitudinalMeters: 1000,
                                         longitudinalMeters: 1000)
         let map = Map(coordinateRegion: .constant(region),
-                      annotationItems: [Location(coordinates: coordinates)]) { MapMarker(coordinate: $0.coordinates) }
+                      annotationItems: [location.coordinate]) { MapMarker(coordinate: $0) }
         VStack {
             HStack {
                 Button(action: {
@@ -40,9 +40,7 @@ struct LocationPreview: View {
                 Spacer()
                 
                 Button(action: {
-                    if let url = URL(string: "https://www.google.com/maps/?q=\(coordinates.latitude),\(coordinates.longitude)") {
-                        onCompletion(url)
-                    }
+                    onCompletion(location)
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Image(systemName: "checkmark.circle")
