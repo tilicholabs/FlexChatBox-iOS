@@ -26,7 +26,6 @@ public struct FlexChatView: View {
     @StateObject var locationManager = LocationManager.shared
     
     @FocusState private var start
-    @State private var flexButtonName: String
     @State private var isPresentFiles = false
     
     let flexType: FlexType
@@ -42,7 +41,6 @@ public struct FlexChatView: View {
         self.textFieldPlaceHolder = placeholder
         self.flexCompletion = flexCompletion
         self.onClickSend = onClickSend
-        _flexButtonName = State(initialValue: flexType.icon)
     }
     
     public var body: some View {
@@ -206,14 +204,13 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var micButton: some View {
-        Image(systemName: flexButtonName)
+        Image(systemName: viewModel.isRecording ? FlexHelper.recordingAudioImageName: flexType.icon)
         //            .offset(x: offset.width, y: 0)
             .gesture(
                 LongPressGesture(minimumDuration: 0.5)
                     .onEnded { value in
                         viewModel.checkMicrophoneAuthorizationStatus()
                         guard let granted = viewModel.isMicPermissionGranted, granted else { return }
-                        flexButtonName = FlexHelper.recordingAudioImageName
                         viewModel.startRecording()
                         isLongPressed = true
                     }
@@ -235,7 +232,6 @@ public struct FlexChatView: View {
                                 flexCompletion(.mic(recordedAudio))
                             }
                             
-                            flexButtonName = flexType.icon
                             isLongPressed = false
                             offset = .zero
                         }
