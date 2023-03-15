@@ -64,7 +64,7 @@ class ViewModel: ObservableObject {
     }
     
     private func setupRecordingSession() {
-        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
         fileName = path.appendingPathComponent(UUID().uuidString + ".m4a")
         guard let fileName else { return }
         

@@ -9,17 +9,17 @@ import PhotosUI
 
 struct Movie: Transferable {
     let url: URL
-
+    
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(contentType: .movie) { movie in
             SentTransferredFile(movie.url)
         } importing: { received in
             let copy = URL.documentsDirectory.appending(path: UUID().uuidString + FlexHelper.videoExtension)
-
+            
             if FileManager.default.fileExists(atPath: copy.path()) {
                 try FileManager.default.removeItem(at: copy)
             }
-
+            
             try FileManager.default.copyItem(at: received.file, to: copy)
             return Self.init(url: copy)
         }
@@ -44,7 +44,8 @@ class ImagePicker: ObservableObject {
         media.images.removeAll()
         media.videos.removeAll()
         for imageSelection in imageSelections {
-            if imageSelection.supportedContentTypes[0].isSubtype(of: .movie) {
+            if let contentType = imageSelection.supportedContentTypes.first,
+               contentType.isSubtype(of: .movie) {
                 do {
                     if let movie = try await imageSelection.loadTransferable(type: Movie.self) {
                         media.videos.append(movie.url)

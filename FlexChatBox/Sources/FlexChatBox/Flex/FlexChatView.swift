@@ -360,7 +360,7 @@ public struct FlexChatView: View {
             do {
                 let fileURLs = try result.get()
                 DispatchQueue.main.async {
-                    flexCompletion(.files(fileURLs))
+                    flexCompletion(.files(fileURLs.filter { $0.startAccessingSecurityScopedResource() }))
                 }
             } catch {
                 print(error.localizedDescription)
