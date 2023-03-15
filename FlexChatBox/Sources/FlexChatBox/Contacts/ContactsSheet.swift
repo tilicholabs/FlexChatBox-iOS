@@ -27,11 +27,14 @@ struct ContactsSheet: View {
                      rowContent: { contact in
                     VStack(alignment: .leading) {
                         Text(contact.firstName + FlexHelper.space + contact.lastName)
+                            .foregroundColor(.black)
                             .font(Font.headline)
                             .bold()
                         Text(contact.phoneNumbers.first ?? FlexHelper.emptyString)
+                            .foregroundColor(.gray)
                             .font(Font.subheadline)
                         Text(contact.emailAddresses.first ?? FlexHelper.emptyString)
+                            .foregroundColor(Color(.lightGray))
                             .font(Font.subheadline)
                     }
                 })

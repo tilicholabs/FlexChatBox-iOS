@@ -22,7 +22,8 @@ class ViewModel: ObservableObject {
     @Published var videoURL: URL?
     @Published var location: Location?
     @Published private var elapsedTime = 0
-    @State private var timer: Timer?
+    @Published private var timer: Timer?
+    @Published var isDragged = false
     
     func checkCameraAuthorizationStatus() {
         showSettingsAlert = false
@@ -82,6 +83,7 @@ class ViewModel: ObservableObject {
         } catch {}
     }
     
+    @discardableResult
     func stopRecording() -> URL? {
         stopTimer()
         audioRecorder?.stop()

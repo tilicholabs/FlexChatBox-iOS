@@ -11,6 +11,8 @@ import CoreLocationUI
 
 public struct FlexChatView: View {
     
+    @State var offset = CGSize.zero
+    @State var isLongPressed = false
     @State var media: Media?
     @State var showGalleryPreview = false
     @State var showLocationPreview = false
@@ -47,9 +49,21 @@ public struct FlexChatView: View {
         HStack {
             if viewModel.isRecording {
                 HStack {
-                    Image(systemName: FlexHelper.recordingAudioImageName)
-                    Text(FlexHelper.recordingAudio)
-                    Text(viewModel.formatTime())
+                    Image(systemName: FlexHelper.xmarkbin)
+                        .padding(.all, 5)
+                        .foregroundColor(viewModel.isDragged ? .red : .black)
+                    Spacer()
+                    VStack(alignment: .center) {
+                        HStack {
+                            Text(FlexHelper.recordingAudio)
+                                .foregroundColor(viewModel.isDragged ? .red : .black)
+                            Text(viewModel.formatTime())
+                                .foregroundColor(viewModel.isDragged ? .red : .black)
+                        }
+                        Text(viewModel.isDragged ? FlexHelper.swipeToCancel: FlexHelper.releaseToSend)
+                            .foregroundColor(viewModel.isDragged ? .red : .black)
+                    }
+                    Spacer()
                 }
                 .frame(maxWidth: .infinity)
             } else {
@@ -73,7 +87,12 @@ public struct FlexChatView: View {
                 customButton
             }
             
-            flexSend
+            if viewModel.isRecording {
+                Image(systemName: FlexHelper.waveform)
+                    .padding(.all, 5)
+            } else {
+                flexSend
+            }
         }
     }
     
@@ -187,47 +206,60 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var micButton: some View {
-        Button(action: {
-            // Action long press
-        }, label: {
-            Image(systemName: flexButtonName)
-                .onLongPressGesture(minimumDuration: 0.5) {
-                    viewModel.checkMicrophoneAuthorizationStatus()
-                    guard let granted = viewModel.isMicPermissionGranted, granted else { return }
-                    flexButtonName = FlexHelper.recordingMicImageName
-                    viewModel.startRecording()
-                }
-            
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 0)
-                        .onEnded { _ in
-                            if viewModel.isRecording,
-                               let recordedAudio = viewModel.stopRecording() {
-                                flexButtonName = flexType.icon
-                                flexCompletion(.mic(recordedAudio))
+        Image(systemName: flexButtonName)
+        //            .offset(x: offset.width, y: 0)
+            .gesture(
+                LongPressGesture(minimumDuration: 0.5)
+                    .onEnded { value in
+                        viewModel.checkMicrophoneAuthorizationStatus()
+                        guard let granted = viewModel.isMicPermissionGranted, granted else { return }
+                        flexButtonName = FlexHelper.recordingAudioImageName
+                        viewModel.startRecording()
+                        isLongPressed = true
+                    }
+                    .simultaneously(with: DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            viewModel.isDragged = !(value.translation.width >= -10)
+                            if isLongPressed, value.translation.width > -120 {
+                                offset.width = value.translation.width
                             }
                         }
-                )
-        })
-        .onAppear(perform: {
-            viewModel.checkMicPermissionWhenAppear()
-        })
-        .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
+                        .onEnded { value in
+                            guard viewModel.isRecording,
+                                  let recordedAudio = viewModel.stopRecording() else {
+                                offset = .zero
+                                return
+                            }
+                            
+                            if !(offset.width < -100) {
+                                flexCompletion(.mic(recordedAudio))
+                            }
+                            
+                            flexButtonName = flexType.icon
+                            isLongPressed = false
+                            offset = .zero
+                        }
+                    )
+            )
+            .onAppear(perform: {
+                viewModel.checkMicPermissionWhenAppear()
+            })
+            .foregroundColor(!(viewModel.isMicPermissionGranted ?? true) ? FlexHelper.disabledButtonColor: FlexHelper.enabledButtonColor)
         
-        .padding(.all, 5)
+            .padding(.all, 5)
         
-        .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: { Text(FlexHelper.cancelButtonTitle) }
-            
-            Button {
-                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-                UIApplication.shared.open(url)
-            } label: { Text(FlexHelper.settingsButtonTitle) }
-        } message: {
-            Text(FlexHelper.microphonePermissionAlert)
-        }
+            .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
+                Button {
+                    // nothing needed here
+                } label: { Text(FlexHelper.cancelButtonTitle) }
+                
+                Button {
+                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(url)
+                } label: { Text(FlexHelper.settingsButtonTitle) }
+            } message: {
+                Text(FlexHelper.microphonePermissionAlert)
+            }
     }
     
     @ViewBuilder

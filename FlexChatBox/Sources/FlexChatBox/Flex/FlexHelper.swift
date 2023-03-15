@@ -21,6 +21,8 @@ public enum FlexHelper {
     
     static let goToSettings = "Go to settings"
     static let recordingAudio = "Recording Audio..."
+    static let releaseToSend = "Release to send"
+    static let swipeToCancel = "Swipe to cancel"
     
     static let contactsTitle = "Contacts"
     
@@ -30,9 +32,7 @@ public enum FlexHelper {
     static let microphonePermissionAlert = "Please click on the Settings to enable the microphone permission"
     static let locationPermissionAlert = "Please click on the Settings to enable the location permission"
     static let contactsPermissionAlert = "Please click on the Settings to enable the contacts permission"
-    
-    static let recordingMicImageName = "stop"
-    
+        
     static let sendButtonImageName = "paperplane"
     static let cameraButtonImageName = "camera"
     static let galleryButtonImageName = "photo"
@@ -42,6 +42,8 @@ public enum FlexHelper {
     static let contactsButtonImageName = "person"
     static let filesButtonImageName = "doc"
     static let recordingAudioImageName = "mic.fill"
+    static let waveform = "waveform"
+    static let xmarkbin = "xmark.bin"
     
     static let videoExtension = ".mp4"
     static let audioFileName = "audioRecorded.m4a"

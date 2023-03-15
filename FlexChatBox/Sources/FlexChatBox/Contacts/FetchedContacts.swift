@@ -37,10 +37,14 @@ class FetchedContacts: ObservableObject, Identifiable {
                                              emailAddresses: contact.emailAddresses.map { $0.value as String }))
                 self.contacts.sort(by: { $0.firstName < $1.firstName })
             })
-            self.presentContacts = true
+            DispatchQueue.main.async {
+                self.presentContacts = true
+            }
             
         } catch let error {
-            self.presentContacts = false
+            DispatchQueue.main.async {
+                self.presentContacts = false
+            }
             print(error.localizedDescription)
         }
     }
@@ -50,12 +54,14 @@ class FetchedContacts: ObservableObject, Identifiable {
         switch CNContactStore.authorizationStatus(for: .contacts) {
         case .notDetermined:
             store.requestAccess(for: .contacts) { granted, _ in
-                self.contactsStatus = granted
-                guard granted else {
-                    self.presentContacts = false
-                    return
+                DispatchQueue.main.async {
+                    self.contactsStatus = granted
+                    guard granted else {
+                        self.presentContacts = false
+                        return
+                    }
+                    self.fetchContacts()
                 }
-                self.fetchContacts()
             }
         case .denied:
             (showSettingsAlert, contactsStatus) = (true, false)
