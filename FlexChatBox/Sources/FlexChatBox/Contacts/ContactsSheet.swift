@@ -42,7 +42,9 @@ struct ContactsSheet: View {
             .toolbar {
                 Button(action: {
                     let selectedContacts = contacts.contacts.filter { selection.contains($0.id) }
-                    completion(selectedContacts)
+                    if !selectedContacts.isEmpty {
+                        completion(selectedContacts)
+                    }
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Text(FlexHelper.doneButtonTitle)

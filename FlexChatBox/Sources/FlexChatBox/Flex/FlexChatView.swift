@@ -32,12 +32,12 @@ public struct FlexChatView: View {
     let flexType: FlexType
     let textFieldPlaceHolder: String
     let flexCompletion: (FlexOutput) -> Void
-    let onClickSend: (String?) -> Void
+    let onClickSend: (String) -> Void
     
     public init(flexType: FlexType,
                 placeholder: String,
                 flexCompletion: @escaping (FlexOutput) -> Void,
-                onClickSend: @escaping (String?) -> Void) {
+                onClickSend: @escaping (String) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
         self.flexCompletion = flexCompletion
@@ -382,7 +382,9 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var flexSend: some View {
         Button(action: {
-            onClickSend(viewModel.textFieldText)
+            if !viewModel.textFieldText.isEmpty {
+                onClickSend(viewModel.textFieldText)
+            }
         }, label: {
             Image(systemName: FlexHelper.sendButtonImageName)
         })
@@ -396,7 +398,7 @@ struct FlexChatView_Previews: PreviewProvider {
                      placeholder: FlexHelper.textFieldPlaceholder,
                      flexCompletion: { image in
             print(image)
-        }, onClickSend: { print($0 ?? FlexHelper.emptyString)} )
+        }, onClickSend: { print($0)} )
         .frame(maxHeight: .infinity, alignment: .bottom)
         .environmentObject(ViewModel())
     }
