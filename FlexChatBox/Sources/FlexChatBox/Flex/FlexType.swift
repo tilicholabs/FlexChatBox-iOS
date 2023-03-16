@@ -41,6 +41,7 @@ public extension FlexType {
 }
 
 public enum FlexOutput {
+    case text(String)
     case camera(Image)
     case gallery(Media)
     case mic(URL)

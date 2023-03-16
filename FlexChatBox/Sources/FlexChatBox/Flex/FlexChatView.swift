@@ -31,16 +31,13 @@ public struct FlexChatView: View {
     let flexType: FlexType
     let textFieldPlaceHolder: String
     let flexCompletion: (FlexOutput) -> Void
-    let onClickSend: (String) -> Void
     
     public init(flexType: FlexType,
                 placeholder: String,
-                flexCompletion: @escaping (FlexOutput) -> Void,
-                onClickSend: @escaping (String) -> Void) {
+                flexCompletion: @escaping (FlexOutput) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
         self.flexCompletion = flexCompletion
-        self.onClickSend = onClickSend
     }
     
     public var body: some View {
@@ -49,7 +46,7 @@ public struct FlexChatView: View {
                 HStack {
                     Image(systemName: FlexHelper.xmarkbin)
                         .padding(.all, 5)
-                        .foregroundColor(viewModel.isDragged ? .red : .black)
+                        .foregroundColor(viewModel.isDragged ? .red : Color(.tintColor))
                     Spacer()
                     VStack(alignment: .center) {
                         HStack {
@@ -379,7 +376,7 @@ public struct FlexChatView: View {
     private var flexSend: some View {
         Button(action: {
             if !viewModel.textFieldText.isEmpty {
-                onClickSend(viewModel.textFieldText)
+                flexCompletion(.text(viewModel.textFieldText))
             }
         }, label: {
             Image(systemName: FlexHelper.sendButtonImageName)
@@ -390,11 +387,9 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView(flexType: .location,
-                     placeholder: FlexHelper.textFieldPlaceholder,
-                     flexCompletion: { image in
-            print(image)
-        }, onClickSend: { print($0)} )
+        FlexChatView(flexType: .location, placeholder: FlexHelper.textFieldPlaceholder, flexCompletion: {
+            print($0)
+        })
         .frame(maxHeight: .infinity, alignment: .bottom)
         .environmentObject(ViewModel())
     }
