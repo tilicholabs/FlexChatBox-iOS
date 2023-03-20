@@ -13,7 +13,6 @@ public struct FlexChatView: View {
     
     @State var offset = CGSize.zero
     @State var isLongPressed = false
-    @State var media: Media?
     @State var showGalleryPreview = false
     @State var showLocationPreview = false
     @State var showPicker = false
@@ -152,49 +151,9 @@ public struct FlexChatView: View {
             Image(systemName: flexType.icon)
         }
                      .padding(.all, 5)
-                     .sheet(isPresented: $showGalleryPreview, onDismiss: {
-                         self.showGalleryPreview = false
-                     }) {
-                         if let media {
-                             GalleryPreview(media: media) { showPicker, selectedMedia in
-                                 if showPicker {
-                                     DispatchQueue.main.async {
-                                         if let selectedMedia,
-                                            let images = selectedMedia.images as? [PhotosPickerItem],
-                                            let videos = selectedMedia.videos as? [PhotosPickerItem] {
-                                             self.imagePicker.imageSelections = images + videos
-                                         }
-                                         self.showPicker = true
-                                     }
-                                 } else {
-                                     if let selectedMedia {
-                                         self.flexCompletion(.gallery(selectedMedia))
-                                     }
-                                     imagePicker.imageSelections.removeAll()
-                                 }
-                             }
-                         } else {
-                             Text("No media")
-                         }
-                     }
                      .onAppear {
-                         self.imagePicker.onCompletion = { selectedMedia in
-                             DispatchQueue.main.async {
-                                 self.media = selectedMedia
-                                 self.showGalleryPreview = true
-                             }
-                         }
-                     }
-                     .photosPicker(isPresented: $showPicker,
-                                   selection: $imagePicker.imageSelections,
-                                   maxSelectionCount: 10,
-                                   matching: .any(of: [.images, .videos]),
-                                   photoLibrary: .shared())
-                     .onChange(of: showPicker) {
-                         if !$0 {
-                             DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                                 imagePicker.onCompletion?(imagePicker.media)
-                             }
+                         imagePicker.onCompletion = {
+                             self.flexCompletion(.gallery($0))
                          }
                      }
     }
