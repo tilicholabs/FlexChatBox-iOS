@@ -9,9 +9,6 @@ import Foundation
 import SwiftUI
 
 public enum FlexHelper {
-    static let disabledButtonColor = Color.gray
-    static let enabledButtonColor = Color(.tintColor)
-    
     static let emptyString = ""
     static let space = " "
     
@@ -48,4 +45,9 @@ public enum FlexHelper {
     static let videoExtension = ".mp4"
     static let audioFileName = "audioRecorded.m4a"
     static let recordingTimeFormat = "%02d:%02d"
+    
+    static let enabledHexColor: String = "#2BA6FF"
+    static let disabledHexColor: String = "#D3D3D3"
+    
+    static let padding: CGFloat = 5.0
 }
