@@ -29,7 +29,7 @@ public enum FlexHelper {
     static let microphonePermissionAlert = "Please click on the Settings to enable the microphone permission"
     static let locationPermissionAlert = "Please click on the Settings to enable the location permission"
     static let contactsPermissionAlert = "Please click on the Settings to enable the contacts permission"
-        
+    
     static let sendButtonImageName = "paperplane"
     static let cameraButtonImageName = "camera"
     static let galleryButtonImageName = "photo"
@@ -49,5 +49,5 @@ public enum FlexHelper {
     static let enabledHexColor: String = "#2BA6FF"
     static let disabledHexColor: String = "#D3D3D3"
     
-    static let padding: CGFloat = 5.0
+    static let padding: CGFloat = 13.0
 }

@@ -71,8 +71,6 @@ public struct FlexChatView: View {
     private var flexTextField: some View {
         HStack(alignment: .bottom) {
             TextField(textFieldPlaceHolder, text: $viewModel.textFieldText, axis: .vertical)
-                .padding(8)
-                .padding(.bottom, 4)
                 .lineLimit(0...4)
                 .focused($start)
                 .onSubmit {
@@ -80,11 +78,12 @@ public struct FlexChatView: View {
                         flexCompletion(.text(viewModel.textFieldText))
                     }
                 }
+                .padding(FlexHelper.padding)
+                .padding(.trailing, -FlexHelper.padding)
             flexSend
-                .padding(8)
         }
-        .overlay(RoundedRectangle(cornerRadius: 20)
-            .stroke(start ? Color(hex: FlexHelper.enabledHexColor): Color(.lightGray)))
+        .background(Color(.systemGray6))
+        .cornerRadius(30)
     }
     
     @ViewBuilder
@@ -93,11 +92,11 @@ public struct FlexChatView: View {
             viewModel.checkCameraAuthorizationStatus()
         }, label: {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
-                .flexBackground(hex: (viewModel.cameraStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
-                .cornerRadius(40)
                 .foregroundColor(Color.white)
+                .flexBackground(hex: (viewModel.cameraStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+                .flexIconCornerRadius()
         })
         
         .onAppear(perform: {
@@ -138,11 +137,11 @@ public struct FlexChatView: View {
                      matching: .any(of: [.images, .videos]),
                      photoLibrary: .shared()) {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
-                .flexBackground(hex: FlexHelper.enabledHexColor)
-                .cornerRadius(35)
                 .foregroundColor(Color.white)
+                .flexBackground(hex: FlexHelper.enabledHexColor)
+                .flexIconCornerRadius()
         }
                      .onAppear {
                          imagePicker.onCompletion = {
@@ -154,11 +153,11 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var micButton: some View {
         Image(systemName: viewModel.isRecording ? FlexHelper.recordingAudioImageName: flexType.icon)
-            .frame(width: 20, height: 20)
+            .flexIconFrame()
             .padding()
-            .flexBackground(hex: (viewModel.isMicPermissionGranted ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
-            .cornerRadius(30)
             .foregroundColor(Color.white)
+            .flexBackground(hex: (viewModel.isMicPermissionGranted ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+            .flexIconCornerRadius()
         //            .offset(x: offset.width, y: 0)
             .gesture(
                 LongPressGesture(minimumDuration: 0.5)
@@ -215,11 +214,11 @@ public struct FlexChatView: View {
             locationManager.requestLocationUpdates()
         }, label: {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
-                .flexBackground(hex: ((locationManager.locationStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor))
-                .cornerRadius(30)
                 .foregroundColor(Color.white)
+                .flexBackground(hex: ((locationManager.locationStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor))
+                .flexIconCornerRadius()
         })
         
         .onAppear(perform: {
@@ -268,11 +267,11 @@ public struct FlexChatView: View {
             contacts.checkAuthorizationStatus()
         }, label: {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
-                .flexBackground(hex: (contacts.contactsStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
-                .cornerRadius(30)
                 .foregroundColor(Color.white)
+                .flexBackground(hex: (contacts.contactsStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+                .flexIconCornerRadius()
         })
         
         .sheet(isPresented: $contacts.presentContacts, content: {
@@ -304,13 +303,13 @@ public struct FlexChatView: View {
             isPresentFiles.toggle()
         }, label: {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
+                .foregroundColor(Color.white)
                 .flexBackground(hex: FlexHelper.enabledHexColor)
-                .cornerRadius(30)
+                .flexIconCornerRadius()
             
         })
-        .foregroundColor(Color.white)
         
         .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true, onCompletion: { result in
             do {
@@ -331,8 +330,11 @@ public struct FlexChatView: View {
             print("Custom button is not initialised")
         }, label: {
             Image(systemName: flexType.icon)
-                .frame(width: 20, height: 20)
+                .flexIconFrame()
                 .padding()
+                .foregroundColor(Color.white)
+                .flexBackground(hex: FlexHelper.enabledHexColor)
+                .flexIconCornerRadius()
         })
     }
     
@@ -348,6 +350,7 @@ public struct FlexChatView: View {
                 .foregroundColor(isTextEmpty ? .gray: Color(hex: FlexHelper.enabledHexColor))
         })
         .padding(FlexHelper.padding)
+        .padding(.leading, -FlexHelper.padding)
     }
     
     @ViewBuilder

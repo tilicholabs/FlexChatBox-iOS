@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Aditya Kumar Bodapati on 27/03/23.
 //
@@ -24,7 +24,7 @@ extension Color {
         default:
             (r, g, b) = (1, 1, 0)
         }
-
+        
         self.init(
             red: Double(r) / 255,
             green: Double(g) / 255,
@@ -35,7 +35,9 @@ extension Color {
 }
 
 extension View {
-    func flexBackground(hex: String) -> some View {
-        background(Color(hex: hex))
-    }
+    func flexBackground(hex: String) -> some View { background(Color(hex: hex)) }
+    
+    func flexIconFrame() -> some View { frame(width: 20, height: 20) }
+    
+    func flexIconCornerRadius() -> some View { cornerRadius(25) }
 }
