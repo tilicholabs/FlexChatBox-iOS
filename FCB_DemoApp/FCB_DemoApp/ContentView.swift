@@ -21,6 +21,10 @@ struct ContentView: View {
     @State private var isAudioPlaying = false
     @State var flexType: FlexType = .camera
     
+    private var themeColor: Color {
+        colorScheme == .dark ? .white: .black
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(alignment: .trailing) {
@@ -141,7 +145,7 @@ struct ContentView: View {
                     
                     
                     Text("\(location.coordinate.latitude), \(location.coordinate.longitude)")
-                        .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                        .foregroundColor(themeColor)
                 }
                 
                 Divider()
@@ -162,7 +166,7 @@ struct ContentView: View {
             Image(systemName: "doc")
             VStack(alignment: .leading) {
                 Text(url.lastPathComponent)
-                    .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                    .foregroundColor(themeColor)
                 Text("\(url.fileSizeString)")
                     .foregroundColor(.gray)
             }
@@ -178,7 +182,7 @@ struct ContentView: View {
             Image(systemName: isSingleContact ? "person.fill": "person.2.fill")
             VStack(alignment: .leading) {
                 Text(contacts[0].firstName + contacts[0].lastName)
-                    .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                    .foregroundColor(themeColor)
                 Text(isSingleContact ? contacts[0].phoneNumbers[0]: "and \(contacts.count - 1) other contact" + (contacts.count == 2 ? "": "s"))
                     .foregroundColor(.gray)
             }

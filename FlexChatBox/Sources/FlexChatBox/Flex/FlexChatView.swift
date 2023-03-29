@@ -12,6 +12,7 @@ import CoreLocationUI
 public struct FlexChatView: View {
     
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.colorScheme) private var colorScheme
     
     @State var offset = CGSize.zero
     @State var isLongPressed = false
@@ -31,6 +32,14 @@ public struct FlexChatView: View {
     let flexType: FlexType
     let textFieldPlaceHolder: String
     let flexCompletion: (FlexOutput) -> Void
+    
+    private var themeColor: Color {
+        colorScheme == .dark ? .white: .black
+    }
+    
+    private var audioRecordingViewColor: Color {
+        viewModel.isDragged ? .red : themeColor
+    }
     
     public init(flexType: FlexType,
                 placeholder: String,
@@ -95,7 +104,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: (viewModel.cameraStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+                .flexBackground(hex: hexColor(status: (viewModel.cameraStatus ?? true)))
                 .flexIconCornerRadius()
         })
         
@@ -140,7 +149,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: FlexHelper.enabledHexColor)
+                .flexBackground()
                 .flexIconCornerRadius()
         }
                      .onAppear {
@@ -156,7 +165,7 @@ public struct FlexChatView: View {
             .flexIconFrame()
             .padding()
             .foregroundColor(Color.white)
-            .flexBackground(hex: (viewModel.isMicPermissionGranted ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+            .flexBackground(hex: hexColor(status: (viewModel.isMicPermissionGranted ?? true)))
             .flexIconCornerRadius()
         //            .offset(x: offset.width, y: 0)
             .gesture(
@@ -217,7 +226,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: ((locationManager.locationStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor))
+                .flexBackground(hex: hexColor(status: (locationManager.locationStatus ?? true)))
                 .flexIconCornerRadius()
         })
         
@@ -270,7 +279,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: (contacts.contactsStatus ?? true) ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor)
+                .flexBackground(hex: hexColor(status: (contacts.contactsStatus ?? true)))
                 .flexIconCornerRadius()
         })
         
@@ -306,7 +315,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: FlexHelper.enabledHexColor)
+                .flexBackground()
                 .flexIconCornerRadius()
             
         })
@@ -333,7 +342,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: FlexHelper.enabledHexColor)
+                .flexBackground()
                 .flexIconCornerRadius()
         })
     }
@@ -347,7 +356,7 @@ public struct FlexChatView: View {
             }
         }, label: {
             Image(systemName: FlexHelper.sendButtonImageName)
-                .foregroundColor(isTextEmpty ? .gray: Color(hex: FlexHelper.enabledHexColor))
+                .foregroundColor(isTextEmpty ? .gray: Color(hex: hexColor()))
         })
         .padding(FlexHelper.padding)
         .padding(.leading, -FlexHelper.padding)
@@ -357,22 +366,26 @@ public struct FlexChatView: View {
     private var audioRecordingView: some View {
         HStack {
             Image(systemName: FlexHelper.xmarkbin)
-                .foregroundColor(viewModel.isDragged ? .red : Color(hex: FlexHelper.enabledHexColor))
+                .foregroundColor(viewModel.isDragged ? .red : Color(hex: hexColor()))
             Spacer()
             VStack(alignment: .center) {
                 HStack {
                     Text(FlexHelper.recordingAudio)
-                        .foregroundColor(viewModel.isDragged ? .red : .black)
+                        .foregroundColor(audioRecordingViewColor)
                     Text(viewModel.formatTime())
-                        .foregroundColor(viewModel.isDragged ? .red : .black)
+                        .foregroundColor(audioRecordingViewColor)
                 }
                 Text(viewModel.isDragged ? FlexHelper.swipeToCancel: FlexHelper.releaseToSend)
-                    .foregroundColor(viewModel.isDragged ? .red : .black)
+                    .foregroundColor(audioRecordingViewColor)
             }
             Spacer()
             Image(systemName: FlexHelper.waveform)
         }
         .frame(maxWidth: .infinity)
+    }
+    
+    private func hexColor(status: Bool = true) -> String {
+        status ? FlexHelper.enabledHexColor: FlexHelper.disabledHexColor
     }
 }
 

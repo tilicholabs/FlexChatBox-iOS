@@ -35,7 +35,9 @@ extension Color {
 }
 
 extension View {
-    func flexBackground(hex: String) -> some View { background(Color(hex: hex)) }
+    func flexBackground(hex: String = FlexHelper.enabledHexColor) -> some View {
+        background(Color(hex: hex))
+    }
     
     func flexIconFrame() -> some View { frame(width: 20, height: 20) }
     

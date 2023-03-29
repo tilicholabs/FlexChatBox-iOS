@@ -9,11 +9,18 @@ import SwiftUI
 
 struct ContactsSheet: View {
     @EnvironmentObject var contacts: FetchedContacts
+    
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.colorScheme) private var colorScheme
+    
     @State private var selection = Set<UUID>()
     @State private var searchText: String = FlexHelper.emptyString
     @State private var editMode = EditMode.active
     let completion: ([Contact]) -> Void
+    
+    private var themeColor: Color {
+        colorScheme == .dark ? .white: .black
+    }
     
     var body: some View {
         NavigationStack {
@@ -27,7 +34,7 @@ struct ContactsSheet: View {
                      rowContent: { contact in
                     VStack(alignment: .leading) {
                         Text(contact.firstName + FlexHelper.space + contact.lastName)
-                            .foregroundColor(.black)
+                            .foregroundColor(themeColor)
                             .font(Font.headline)
                             .bold()
                         Text(contact.phoneNumbers.first ?? FlexHelper.emptyString)
