@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 
 class AudioPlayer: NSObject, AVAudioPlayerDelegate, ObservableObject {
-    var audioPlayer: AVAudioPlayer?
+    private var audioPlayer: AVAudioPlayer?
     @Published var isPlaying = false
     
     func startPlaying(url: URL) {
@@ -36,7 +36,7 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate, ObservableObject {
         audioPlayer?.stop()
         isPlaying = false
     }
-
+    
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         isPlaying = false
     }

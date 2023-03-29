@@ -12,23 +12,17 @@ extension URL {
     var attributes: [FileAttributeKey : Any]? {
         do {
             return try FileManager.default.attributesOfItem(atPath: path)
-        } catch let error as NSError {
-            print("FileAttribute error: \(error)")
-        }
+        } catch {}
         return nil
     }
     
-    var fileSize: UInt64 {
-        return attributes?[.size] as? UInt64 ?? UInt64(0)
-    }
+    var fileSize: UInt64 { attributes?[.size] as? UInt64 ?? UInt64(0) }
     
     var fileSizeString: String {
-        return ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
+        ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
     }
     
-    var creationDate: Date? {
-        return attributes?[.creationDate] as? Date
-    }
+    var creationDate: Date? { attributes?[.creationDate] as? Date }
 }
 
 extension Color {
@@ -47,7 +41,7 @@ extension Color {
         default:
             (r, g, b) = (1, 1, 0)
         }
-
+        
         self.init(
             .sRGB,
             red: Double(r) / 255,
@@ -60,11 +54,21 @@ extension Color {
 
 extension View {
     func flexRoundedCorner(radius: CGFloat = DemoHelper.cornerRadius, corners: UIRectCorner = DemoHelper.viewCorners) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners) )
+        clipShape(RoundedCorner(radius: radius, corners: corners))
     }
     
     func flexBackground(hex: String = DemoHelper.hexColor,
-                           opacity: Double = DemoHelper.secondaryOpacity) -> some View {
+                        opacity: Double = DemoHelper.secondaryOpacity) -> some View {
         background(Color(hex: hex, opacity: opacity))
+    }
+}
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
