@@ -67,11 +67,12 @@ struct ContentView: View {
                     }
                     .rotationEffect(.radians(.pi))
                     .scaleEffect(x: -1, y: 1, anchor: .center)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .padding(4)
                 .rotationEffect(.radians(.pi))
                 .scaleEffect(x: -1, y: 1, anchor: .center)
                 .animation(.easeInOut(duration: 1), value: flexMessages.count)
+                .ignoresSafeArea()
                 
                 FlexChatBox(flexType: flexType) { self.flexMessages.append($0) }
             }
