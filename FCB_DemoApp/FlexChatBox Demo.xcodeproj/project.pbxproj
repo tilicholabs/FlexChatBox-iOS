@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DB3FF6FF29D2FB93008F5838 /* FCB_DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF6FE29D2FB93008F5838 /* FCB_DemoApp.swift */; };
+		DB3FF6FF29D2FB93008F5838 /* FlexChatBox Demo App.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */; };
 		DB3FF70329D2FB95008F5838 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB3FF70229D2FB95008F5838 /* Assets.xcassets */; };
 		DB3FF70629D2FB95008F5838 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB3FF70529D2FB95008F5838 /* Preview Assets.xcassets */; };
 		DB3FF71129D2FBD1008F5838 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70C29D2FBD0008F5838 /* ContentView.swift */; };
@@ -16,12 +16,12 @@
 		DB3FF71429D2FBD1008F5838 /* DemoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */; };
 		DB3FF71529D2FBD1008F5838 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF71029D2FBD1008F5838 /* AudioView.swift */; };
 		DB3FF71829D2FC73008F5838 /* FlexChatBox in Frameworks */ = {isa = PBXBuildFile; productRef = DB3FF71729D2FC73008F5838 /* FlexChatBox */; };
-		DB7D2E0629D309D700E4A59B /* FCB-DemoApp-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB7D2E0529D309D700E4A59B /* FCB-DemoApp-Info.plist */; };
+		DB7D2E0629D309D700E4A59B /* FlexChatBox Demo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		DB3FF6FB29D2FB93008F5838 /* FCB_DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FCB_DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB3FF6FE29D2FB93008F5838 /* FCB_DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCB_DemoApp.swift; sourceTree = "<group>"; };
+		DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlexChatBox Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlexChatBox Demo App.swift"; sourceTree = "<group>"; };
 		DB3FF70229D2FB95008F5838 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB3FF70529D2FB95008F5838 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		DB3FF70C29D2FBD0008F5838 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -29,7 +29,7 @@
 		DB3FF70E29D2FBD0008F5838 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoHelper.swift; sourceTree = "<group>"; };
 		DB3FF71029D2FBD1008F5838 /* AudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
-		DB7D2E0529D309D700E4A59B /* FCB-DemoApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FCB-DemoApp-Info.plist"; sourceTree = "<group>"; };
+		DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FlexChatBox Demo-Info.plist"; sourceTree = "<group>"; };
 		DBAB582629D2FDA7008C982C /* FlexChatBox */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlexChatBox; path = ../FlexChatBox; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -48,8 +48,8 @@
 		DB3FF6F229D2FB93008F5838 = {
 			isa = PBXGroup;
 			children = (
-				DB7D2E0529D309D700E4A59B /* FCB-DemoApp-Info.plist */,
-				DB3FF6FD29D2FB93008F5838 /* FCB_DemoApp */,
+				DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */,
+				DB3FF6FD29D2FB93008F5838 /* FlexChatBox Demo */,
 				DB3FF6FC29D2FB93008F5838 /* Products */,
 				DB3FF71629D2FC73008F5838 /* Frameworks */,
 			);
@@ -58,15 +58,15 @@
 		DB3FF6FC29D2FB93008F5838 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB3FF6FB29D2FB93008F5838 /* FCB_DemoApp.app */,
+				DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DB3FF6FD29D2FB93008F5838 /* FCB_DemoApp */ = {
+		DB3FF6FD29D2FB93008F5838 /* FlexChatBox Demo */ = {
 			isa = PBXGroup;
 			children = (
-				DB3FF6FE29D2FB93008F5838 /* FCB_DemoApp.swift */,
+				DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */,
 				DB3FF70D29D2FBD0008F5838 /* AudioPlayer.swift */,
 				DB3FF71029D2FBD1008F5838 /* AudioView.swift */,
 				DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */,
@@ -75,7 +75,7 @@
 				DB3FF70229D2FB95008F5838 /* Assets.xcassets */,
 				DB3FF70429D2FB95008F5838 /* Preview Content */,
 			);
-			path = FCB_DemoApp;
+			path = "FlexChatBox Demo";
 			sourceTree = "<group>";
 		};
 		DB3FF70429D2FB95008F5838 /* Preview Content */ = {
@@ -97,9 +97,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DB3FF6FA29D2FB93008F5838 /* FCB_DemoApp */ = {
+		DB3FF6FA29D2FB93008F5838 /* FlexChatBox Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DB3FF70929D2FB95008F5838 /* Build configuration list for PBXNativeTarget "FCB_DemoApp" */;
+			buildConfigurationList = DB3FF70929D2FB95008F5838 /* Build configuration list for PBXNativeTarget "FlexChatBox Demo" */;
 			buildPhases = (
 				DB3FF6F729D2FB93008F5838 /* Sources */,
 				DB3FF6F829D2FB93008F5838 /* Frameworks */,
@@ -109,12 +109,12 @@
 			);
 			dependencies = (
 			);
-			name = FCB_DemoApp;
+			name = "FlexChatBox Demo";
 			packageProductDependencies = (
 				DB3FF71729D2FC73008F5838 /* FlexChatBox */,
 			);
 			productName = FCB_DemoApp;
-			productReference = DB3FF6FB29D2FB93008F5838 /* FCB_DemoApp.app */;
+			productReference = DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -132,7 +132,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DB3FF6F629D2FB93008F5838 /* Build configuration list for PBXProject "FCB_DemoApp" */;
+			buildConfigurationList = DB3FF6F629D2FB93008F5838 /* Build configuration list for PBXProject "FlexChatBox Demo" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -145,7 +145,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DB3FF6FA29D2FB93008F5838 /* FCB_DemoApp */,
+				DB3FF6FA29D2FB93008F5838 /* FlexChatBox Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -155,7 +155,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB7D2E0629D309D700E4A59B /* FCB-DemoApp-Info.plist in Resources */,
+				DB7D2E0629D309D700E4A59B /* FlexChatBox Demo-Info.plist in Resources */,
 				DB3FF70629D2FB95008F5838 /* Preview Assets.xcassets in Resources */,
 				DB3FF70329D2FB95008F5838 /* Assets.xcassets in Resources */,
 			);
@@ -168,7 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB3FF6FF29D2FB93008F5838 /* FCB_DemoApp.swift in Sources */,
+				DB3FF6FF29D2FB93008F5838 /* FlexChatBox Demo App.swift in Sources */,
 				DB3FF71529D2FBD1008F5838 /* AudioView.swift in Sources */,
 				DB3FF71129D2FBD1008F5838 /* ContentView.swift in Sources */,
 				DB3FF71229D2FBD1008F5838 /* AudioPlayer.swift in Sources */,
@@ -301,11 +301,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"FCB_DemoApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"FlexChatBox Demo/Preview Content\"";
 				DEVELOPMENT_TEAM = X37K3475E9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "FCB-DemoApp-Info.plist";
+				INFOPLIST_FILE = "FlexChatBox Demo-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your Camera to capture images and videoes.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "This app requires access to your Phonebook to access your contacts.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app requires access to your Location to detect your current location.";
@@ -320,8 +320,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.tilicho.FCB-DemoApp";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tilicho.FlexChatBox-Sample";
+				PRODUCT_NAME = "FlexChatBox Demo";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -335,11 +335,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"FCB_DemoApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"FlexChatBox Demo/Preview Content\"";
 				DEVELOPMENT_TEAM = X37K3475E9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "FCB-DemoApp-Info.plist";
+				INFOPLIST_FILE = "FlexChatBox Demo-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your Camera to capture images and videoes.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "This app requires access to your Phonebook to access your contacts.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app requires access to your Location to detect your current location.";
@@ -354,8 +354,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.tilicho.FCB-DemoApp";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tilicho.FlexChatBox-Sample";
+				PRODUCT_NAME = "FlexChatBox Demo";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -365,7 +365,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DB3FF6F629D2FB93008F5838 /* Build configuration list for PBXProject "FCB_DemoApp" */ = {
+		DB3FF6F629D2FB93008F5838 /* Build configuration list for PBXProject "FlexChatBox Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB3FF70729D2FB95008F5838 /* Debug */,
@@ -374,7 +374,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DB3FF70929D2FB95008F5838 /* Build configuration list for PBXNativeTarget "FCB_DemoApp" */ = {
+		DB3FF70929D2FB95008F5838 /* Build configuration list for PBXNativeTarget "FlexChatBox Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DB3FF70A29D2FB95008F5838 /* Debug */,

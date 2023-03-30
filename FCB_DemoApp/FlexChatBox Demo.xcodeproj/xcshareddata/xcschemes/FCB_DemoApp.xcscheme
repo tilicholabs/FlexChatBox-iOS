@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DB3FF6FA29D2FB93008F5838"
-               BuildableName = "FCB_DemoApp.app"
-               BlueprintName = "FCB_DemoApp"
-               ReferencedContainer = "container:FCB_DemoApp.xcodeproj">
+               BuildableName = "FlexChatBox Demo.app"
+               BlueprintName = "FlexChatBox Demo"
+               ReferencedContainer = "container:FlexChatBox Demo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DB3FF6FA29D2FB93008F5838"
-            BuildableName = "FCB_DemoApp.app"
-            BlueprintName = "FCB_DemoApp"
-            ReferencedContainer = "container:FCB_DemoApp.xcodeproj">
+            BuildableName = "FlexChatBox Demo.app"
+            BlueprintName = "FlexChatBox Demo"
+            ReferencedContainer = "container:FlexChatBox Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DB3FF6FA29D2FB93008F5838"
-            BuildableName = "FCB_DemoApp.app"
-            BlueprintName = "FCB_DemoApp"
-            ReferencedContainer = "container:FCB_DemoApp.xcodeproj">
+            BuildableName = "FlexChatBox Demo.app"
+            BlueprintName = "FlexChatBox Demo"
+            ReferencedContainer = "container:FlexChatBox Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
