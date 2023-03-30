@@ -12,24 +12,25 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate, ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     @Published var isPlaying = false
     
-    func startPlaying(url: URL) {
+    var duration: Int {
+        Int(audioPlayer?.duration ?? 0)
+    }
+    
+    init(url: URL) {
+        super.init()
         let playSession = AVAudioSession.sharedInstance()
         
         do {
             try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
-        } catch {
-            print("Playing failed in Device")
-        }
-        
-        do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.delegate = self
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-            isPlaying = true
-        } catch {
-            print("Playing Failed")
-        }
+        } catch {}
+    }
+    
+    func startPlaying() {
+        audioPlayer?.prepareToPlay()
+        audioPlayer?.play()
+        isPlaying = true
     }
     
     func stopPlaying() {

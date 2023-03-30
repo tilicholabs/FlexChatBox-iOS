@@ -17,7 +17,6 @@ struct ContentView: View {
     
     @State private var flexMessages = [FlexOutput]()
     
-    @StateObject var audioPlayer = AudioPlayer()
     @State private var isAudioPlaying = false
     @State var flexType: FlexType = .camera
     
@@ -48,8 +47,8 @@ struct ContentView: View {
                                     videoView(url: videos[index])
                                 }
                             case .mic(let audioURL):
-                                AudioView(url: audioURL)
-                                    .environmentObject(AudioPlayer())
+                                AudioView()
+                                    .environmentObject(AudioPlayer(url: audioURL))
                             case .custom(let string):
                                 Text(string)
                             case .location(let location):
