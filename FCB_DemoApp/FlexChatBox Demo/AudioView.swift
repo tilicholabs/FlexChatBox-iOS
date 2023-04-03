@@ -14,7 +14,7 @@ struct AudioView: View {
     @State private var elapsedTime = 0
     
     private var formatTime: String {
-        let time  = player.isPlaying ? elapsedTime: player.duration
+        let time  = (player.isPlaying && elapsedTime < player.duration) ? elapsedTime: player.duration
         let minutes = time / 60
         let seconds = time % 60
         return String(format: "%02d:%02d", minutes, seconds)
@@ -45,12 +45,12 @@ struct AudioView: View {
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             elapsedTime < player.duration ? elapsedTime += 1: stopTimer()
+            if elapsedTime < player.duration { elapsedTime = 0 }
         }
     }
     
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
-        elapsedTime = 0
     }
 }
