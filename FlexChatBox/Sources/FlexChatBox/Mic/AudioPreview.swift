@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct AudioPreview: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var player: AudioPlayer
     @State private var timer: Timer?
     @State private var isPlaying = false
@@ -30,12 +31,12 @@ struct AudioPreview: View {
                 Image(systemName: player.isPlaying ? "pause.fill" : "play.fill").font(.title)
                     .flexIconFrame()
                     .padding()
-                    .foregroundColor(Color.white)
-                    .background(.black.opacity(0.75))
+                    .foregroundColor(colorScheme == .dark ? .black: .white)
+                    .background((colorScheme == .dark ? .white: .black.opacity(0.75)))
                     .flexIconCornerRadius()
             }
             
-            VStack {
+            VStack(spacing: 0) {
                 Slider(value: $elapsedTime, in: 0...player.duration) { isBegin in
                     DispatchQueue.main.async {
                         guard !isBegin else {
@@ -52,6 +53,10 @@ struct AudioPreview: View {
                             self.stopTimer()
                         }
                     }
+                }
+                .onAppear {
+                    let image = UIImage(systemName: "circle.fill")
+                    UISlider.appearance().setThumbImage(image, for: .normal)
                 }
                 
                 HStack {
