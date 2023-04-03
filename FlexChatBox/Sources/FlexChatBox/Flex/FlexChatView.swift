@@ -51,27 +51,38 @@ public struct FlexChatView: View {
     
     public var body: some View {
         HStack(alignment: .bottom) {
-            if viewModel.isRecording {
-                audioRecordingView
+            if viewModel.showAudioPreview,
+               let audioURL = viewModel.fileName {
+                AudioPreview() {
+                    if $0 { self.flexCompletion(.mic(audioURL)) }
+                    viewModel.isRecording = false
+                    viewModel.showAudioPreview = false
+                    viewModel.fileName = nil
+                }
+                .environmentObject(AudioPlayer(url: audioURL))
             } else {
-                flexTextField
-            }
-            
-            switch flexType {
-            case .camera:
-                cameraButton
-            case .gallery:
-                photosPicker
-            case .mic:
-                micButton
-            case .location:
-                locationButton
-            case .contacts:
-                contactsButton
-            case .files:
-                filesButton
-            case .custom:
-                customButton
+                if viewModel.isRecording {
+                    audioRecordingView
+                } else {
+                    flexTextField
+                }
+                
+                switch flexType {
+                case .camera:
+                    cameraButton
+                case .gallery:
+                    photosPicker
+                case .mic:
+                    micButton
+                case .location:
+                    locationButton
+                case .contacts:
+                    contactsButton
+                case .files:
+                    filesButton
+                case .custom:
+                    customButton
+                }
             }
         }
     }
@@ -183,18 +194,15 @@ public struct FlexChatView: View {
                                 offset.width = value.translation.width
                             }
                         }
-                        .onEnded { value in
-                            guard viewModel.isRecording,
-                                  let recordedAudio = viewModel.stopRecording() else {
-                                offset = .zero
-                                return
+                        .onEnded { _ in
+                            if viewModel.isRecording {
+                                viewModel.stopRecording()
+                                if !(offset.width < -100) {
+                                    viewModel.showAudioPreview = true
+                                }
+                                
+                                isLongPressed = false
                             }
-                            
-                            if !(offset.width < -100) {
-                                flexCompletion(.mic(recordedAudio))
-                            }
-                            
-                            isLongPressed = false
                             offset = .zero
                         }
                     )

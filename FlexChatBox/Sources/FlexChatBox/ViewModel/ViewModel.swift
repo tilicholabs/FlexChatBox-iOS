@@ -10,7 +10,9 @@ import CoreLocation
 
 class ViewModel: ObservableObject {
     private var audioRecorder: AVAudioRecorder?
-    private var fileName: URL?
+    var fileName: URL?
+    
+    @Published var showAudioPreview = false
     @Published var isRecording = false
     @Published var isMicPermissionGranted: Bool?
     
@@ -83,12 +85,10 @@ class ViewModel: ObservableObject {
         } catch {}
     }
     
-    @discardableResult
-    func stopRecording() -> URL? {
+    func stopRecording() {
         stopTimer()
         audioRecorder?.stop()
         isRecording = false
-        return fileName
     }
     
     func checkMicrophoneAuthorizationStatus() {

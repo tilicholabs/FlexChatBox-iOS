@@ -48,6 +48,8 @@ public enum FlexHelper {
     
     static let enabledHexColor: String = "#2BA6FF"
     static let disabledHexColor: String = "#D3D3D3"
+    static let sendAudioHexColor: String = "#2BA6FF"
+    static let deleteAudioHexColor: String = "FF0404"
     
     static let padding: CGFloat = 13.0
 }
