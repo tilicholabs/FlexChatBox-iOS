@@ -10,9 +10,7 @@ import PhotosUI
 import CoreLocationUI
 
 public struct FlexChatView: View {
-    
     @Environment(\.presentationMode) private var presentationMode
-    @Environment(\.colorScheme) private var colorScheme
     
     @State var offset = CGSize.zero
     @State var isLongPressed = false
@@ -33,12 +31,8 @@ public struct FlexChatView: View {
     let textFieldPlaceHolder: String
     let flexCompletion: (FlexOutput) -> Void
     
-    private var themeColor: Color {
-        colorScheme == .dark ? .white: .black
-    }
-    
     private var audioRecordingViewColor: Color {
-        viewModel.isDragged ? .red : themeColor
+        viewModel.isDragged ? .red : .primary
     }
     
     public init(flexType: FlexType,
@@ -108,20 +102,19 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var cameraButton: some View {
-        Button(action: {
+        Button {
             viewModel.checkCameraAuthorizationStatus()
-        }, label: {
+        } label: {
             Image(systemName: flexType.icon)
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
                 .flexBackground(hex: hexColor(status: (viewModel.cameraStatus ?? true)))
                 .flexIconCornerRadius()
-        })
-        
-        .onAppear(perform: {
+        }
+        .onAppear {
             viewModel.checkCameraStatusWhenAppear()
-        })
+        }
         
         .sheet(isPresented: $viewModel.presentCamera) {
             CaptureImage(capturedImage: $viewModel.capturedImage, videoURL: $viewModel.videoURL)
@@ -137,14 +130,12 @@ public struct FlexChatView: View {
         }
         
         .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: { Text(FlexHelper.cancelButtonTitle) }
+            Button(FlexHelper.cancelButtonTitle) {}
             
-            Button {
+            Button(FlexHelper.settingsButtonTitle) {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: { Text(FlexHelper.settingsButtonTitle) }
+            }
         } message: {
             Text(FlexHelper.cameraPermissionAlert)
         }
@@ -212,14 +203,12 @@ public struct FlexChatView: View {
             })
         
             .alert(FlexHelper.goToSettings, isPresented: $viewModel.showSettingsAlert) {
-                Button {
-                    // nothing needed here
-                } label: { Text(FlexHelper.cancelButtonTitle) }
+                Button(FlexHelper.cancelButtonTitle) {}
                 
-                Button {
+                Button(FlexHelper.settingsButtonTitle) {
                     guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                     UIApplication.shared.open(url)
-                } label: { Text(FlexHelper.settingsButtonTitle) }
+                }
             } message: {
                 Text(FlexHelper.microphonePermissionAlert)
             }
@@ -227,37 +216,34 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var locationButton: some View {
-        Button(action: {
+        Button {
             locationManager.requestLocationUpdates()
-        }, label: {
+        } label: {
             Image(systemName: flexType.icon)
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
                 .flexBackground(hex: hexColor(status: (locationManager.locationStatus ?? true)))
                 .flexIconCornerRadius()
-        })
-        
-        .onAppear(perform: {
+        }
+        .onAppear {
             locationManager.checkLocationStatusWhenAppear()
-        })
+        }
         
-        .onReceive(locationManager.$getCoordinates, perform: { isGranted in
+        .onReceive(locationManager.$getCoordinates) { isGranted in
             if isGranted, let location = locationManager.location {
                 showLocationPreview = true
                 viewModel.location = location
             }
-        })
+        }
         
         .alert(FlexHelper.goToSettings, isPresented: $locationManager.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: { Text(FlexHelper.cancelButtonTitle) }
+            Button(FlexHelper.cancelButtonTitle) {}
             
-            Button {
+            Button(FlexHelper.settingsButtonTitle) {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: { Text(FlexHelper.settingsButtonTitle) }
+            }
         } message: {
             Text(FlexHelper.locationPermissionAlert)
         }
@@ -280,35 +266,33 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var contactsButton: some View {
-        Button(action: {
+        Button {
             contacts.checkAuthorizationStatus()
-        }, label: {
+        } label: {
             Image(systemName: flexType.icon)
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
                 .flexBackground(hex: hexColor(status: (contacts.contactsStatus ?? true)))
                 .flexIconCornerRadius()
-        })
+        }
         
-        .sheet(isPresented: $contacts.presentContacts, content: {
+        .sheet(isPresented: $contacts.presentContacts) {
             ContactsSheet(completion: { flexCompletion(.contacts($0)) })
                 .environmentObject(contacts)
-        })
+        }
         
-        .onAppear(perform: {
+        .onAppear {
             contacts.checkContactsStatusWhenAppear()
-        })
+        }
         
         .alert(FlexHelper.goToSettings, isPresented: $contacts.showSettingsAlert) {
-            Button {
-                // nothing needed here
-            } label: { Text(FlexHelper.cancelButtonTitle) }
+            Button(FlexHelper.cancelButtonTitle) {}
             
-            Button {
+            Button(FlexHelper.settingsButtonTitle) {
                 guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                 UIApplication.shared.open(url)
-            } label: { Text(FlexHelper.settingsButtonTitle) }
+            }
         } message: {
             Text(FlexHelper.contactsPermissionAlert)
         }
@@ -316,19 +300,18 @@ public struct FlexChatView: View {
     
     @ViewBuilder
     private var filesButton: some View {
-        Button(action: {
+        Button {
             isPresentFiles.toggle()
-        }, label: {
+        } label: {
             Image(systemName: flexType.icon)
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
                 .flexBackground()
                 .flexIconCornerRadius()
-            
-        })
+        }
         
-        .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true, onCompletion: { result in
+        .fileImporter(isPresented: $isPresentFiles, allowedContentTypes: [.item], allowsMultipleSelection: true) { result in
             do {
                 let fileURLs = try result.get()
                 DispatchQueue.main.async {
@@ -337,35 +320,35 @@ public struct FlexChatView: View {
             } catch {
                 print(error.localizedDescription)
             }
-        })
+        }
     }
     
     @ViewBuilder
     private var customButton: some View {
-        Button(action: {
+        Button {
             // Custom button action
             print("Custom button is not initialised")
-        }, label: {
+        } label: {
             Image(systemName: flexType.icon)
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
                 .flexBackground()
                 .flexIconCornerRadius()
-        })
+        }
     }
     
     @ViewBuilder
     private var flexSend: some View {
         let isTextEmpty = viewModel.textFieldText.isEmpty
-        Button(action: {
+        Button {
             if !isTextEmpty {
                 flexCompletion(.text(viewModel.textFieldText))
             }
-        }, label: {
+        } label: {
             Image(systemName: FlexHelper.sendButtonImageName)
                 .foregroundColor(isTextEmpty ? .gray: Color(hex: hexColor()))
-        })
+        }
         .padding(FlexHelper.padding)
         .padding(.leading, -FlexHelper.padding)
     }

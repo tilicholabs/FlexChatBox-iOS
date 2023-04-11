@@ -23,14 +23,14 @@ struct LocationPreview: View {
                       annotationItems: [location.coordinate]) { MapMarker(coordinate: $0) }
         VStack {
             HStack {
-                Button(action: {
+                Button {
                     onCompletion(nil)
                     presentationMode.wrappedValue.dismiss()
-                }, label: {
+                } label: {
                     Image(systemName: "xmark")
                         .resizable()
                         .frame(width: 20, height: 20)
-                })
+                }
                 
                 Spacer()
                 
@@ -39,14 +39,14 @@ struct LocationPreview: View {
                 
                 Spacer()
                 
-                Button(action: {
+                Button {
                     onCompletion(location)
                     presentationMode.wrappedValue.dismiss()
-                }, label: {
+                } label: {
                     Image(systemName: "checkmark.circle")
                         .resizable()
                         .frame(width: 30, height: 30)
-                })
+                }
             }
             .padding(.leading)
             .padding(.trailing)

@@ -8,33 +8,27 @@
 import SwiftUI
 
 struct ContactsSheet: View {
-    @EnvironmentObject var contacts: FetchedContacts
-    
+    @EnvironmentObject var fetchedContacts: FetchedContacts
     @Environment(\.presentationMode) private var presentationMode
-    @Environment(\.colorScheme) private var colorScheme
     
     @State private var selection = Set<UUID>()
     @State private var searchText: String = FlexHelper.emptyString
     @State private var editMode = EditMode.active
     let completion: ([Contact]) -> Void
     
-    private var themeColor: Color {
-        colorScheme == .dark ? .white: .black
-    }
-    
     var body: some View {
         NavigationStack {
             VStack {
                 SearchBar(text: $searchText)
                 
-                List(contacts.contacts.filter({
+                List(fetchedContacts.contacts.filter({
                     searchText.isEmpty ? true : ($0.firstName + FlexHelper.space + $0.lastName).lowercased().contains(searchText.lowercased())
                 }),
                      selection: $selection,
                      rowContent: { contact in
                     VStack(alignment: .leading) {
                         Text(contact.firstName + FlexHelper.space + contact.lastName)
-                            .foregroundColor(themeColor)
+                            .foregroundColor(.primary)
                             .font(Font.headline)
                             .bold()
                         Text(contact.phoneNumbers.first ?? FlexHelper.emptyString)
@@ -47,15 +41,13 @@ struct ContactsSheet: View {
                 })
             }
             .toolbar {
-                Button(action: {
-                    let selectedContacts = contacts.contacts.filter { selection.contains($0.id) }
+                Button(FlexHelper.doneButtonTitle) {
+                    let selectedContacts = fetchedContacts.contacts.filter { selection.contains($0.id) }
                     if !selectedContacts.isEmpty {
                         completion(selectedContacts)
                     }
                     presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Text(FlexHelper.doneButtonTitle)
-                })
+                }
             }
             .environment(\.editMode, $editMode)
             .navigationTitle(FlexHelper.contactsTitle)

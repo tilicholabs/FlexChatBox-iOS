@@ -5,18 +5,16 @@
 //  Created by Aditya Kumar Bodapati on 01/03/23.
 //
 
-import UIKit
 import SwiftUI
-import MapKit
 
-public enum FlexType {
+public enum FlexType: String, CaseIterable {
     case camera
     case gallery
     case mic
-    case custom
     case location
     case contacts
     case files
+    case custom
 }
 
 public extension FlexType {

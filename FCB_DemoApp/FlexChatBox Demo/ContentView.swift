@@ -12,17 +12,10 @@ import AVFoundation
 import MapKit
 
 struct ContentView: View {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
     @State private var flexMessages = [FlexOutput]()
     
     @State private var isAudioPlaying = false
-    @State var flexType: FlexType = .camera
-    
-    private var themeColor: Color {
-        colorScheme == .dark ? .white: .black
-    }
+    @State private var flexType: FlexType = .camera
     
     var body: some View {
         NavigationStack {
@@ -91,15 +84,11 @@ struct ContentView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu(flexType.icon + " \u{276F}") {
-                        Button(action: { flexType = .camera }, label: { Text("Camera") })
-                        Button(action: { flexType = .gallery }, label: { Text("Gallery") })
-                        Button(action: { flexType = .mic }, label: { Text("Mic") })
-                        Button(action: { flexType = .location }, label: { Text("Location") })
-                        Button(action: { flexType = .contacts }, label: { Text("Contacts") })
-                        Button(action: { flexType = .files }, label: { Text("Files") })
+                    Picker("", selection: $flexType) {
+                        ForEach(FlexType.allCases, id: \.self) {
+                            Text($0.rawValue)
+                        }
                     }
-                    .menuStyle(.automatic)
                 }
             }
         }
@@ -145,7 +134,7 @@ struct ContentView: View {
                     
                     
                     Text("\(location.coordinate.latitude), \(location.coordinate.longitude)")
-                        .foregroundColor(themeColor)
+                        .foregroundColor(.primary)
                 }
                 
                 Divider()
@@ -166,7 +155,7 @@ struct ContentView: View {
             Image(systemName: "doc")
             VStack(alignment: .leading) {
                 Text(url.lastPathComponent)
-                    .foregroundColor(themeColor)
+                    .foregroundColor(.primary)
                 Text("\(url.fileSizeString)")
                     .foregroundColor(.gray)
             }
@@ -182,7 +171,7 @@ struct ContentView: View {
             Image(systemName: isSingleContact ? "person.fill": "person.2.fill")
             VStack(alignment: .leading) {
                 Text(contacts[0].firstName + contacts[0].lastName)
-                    .foregroundColor(themeColor)
+                    .foregroundColor(.primary)
                 Text(isSingleContact ? contacts[0].phoneNumbers[0]: "and \(contacts.count - 1) other contact" + (contacts.count == 2 ? "": "s"))
                     .foregroundColor(.gray)
             }
