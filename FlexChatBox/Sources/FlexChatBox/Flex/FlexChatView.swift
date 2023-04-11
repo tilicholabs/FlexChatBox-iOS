@@ -109,7 +109,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: hexColor(status: (viewModel.cameraStatus ?? true)))
+                .flexBackground(hex: hexColor(status: viewModel.cameraStatus != .denied))
                 .flexIconCornerRadius()
         }
         .onAppear {
@@ -167,14 +167,14 @@ public struct FlexChatView: View {
             .flexIconFrame()
             .padding()
             .foregroundColor(Color.white)
-            .flexBackground(hex: hexColor(status: (viewModel.isMicPermissionGranted ?? true)))
+            .flexBackground(hex: hexColor(status: viewModel.isMicPermissionGranted != .denied))
             .flexIconCornerRadius()
         //            .offset(x: offset.width, y: 0)
             .gesture(
                 LongPressGesture(minimumDuration: 0.5)
                     .onEnded { value in
                         viewModel.checkMicrophoneAuthorizationStatus()
-                        guard let granted = viewModel.isMicPermissionGranted, granted else { return }
+                        guard viewModel.isMicPermissionGranted == .authorised else { return }
                         viewModel.startRecording()
                         isLongPressed = true
                     }
@@ -223,7 +223,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: hexColor(status: (locationManager.locationStatus ?? true)))
+                .flexBackground(hex: hexColor(status: locationManager.locationStatus != .denied))
                 .flexIconCornerRadius()
         }
         .onAppear {
@@ -273,7 +273,7 @@ public struct FlexChatView: View {
                 .flexIconFrame()
                 .padding()
                 .foregroundColor(Color.white)
-                .flexBackground(hex: hexColor(status: (contacts.contactsStatus ?? true)))
+                .flexBackground(hex: hexColor(status: contacts.contactsStatus != .denied))
                 .flexIconCornerRadius()
         }
         

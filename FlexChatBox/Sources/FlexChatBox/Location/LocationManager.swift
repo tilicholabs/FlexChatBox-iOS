@@ -27,7 +27,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     @Published var location: Location?
     @Published var showSettingsAlert = false
     @Published var getCoordinates = false
-    @Published var locationStatus: Bool?
+    @Published var locationStatus: FlexButtonAuthStatus = .notDetermined
 
     private override init() {
         super.init()
@@ -45,36 +45,36 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         (getCoordinates, showSettingsAlert) = (false, false)
         switch manager.authorizationStatus {
         case .notDetermined:
-            locationStatus = nil
+            locationStatus = .notDetermined
             manager.requestWhenInUseAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
-            (getCoordinates, locationStatus) = (true, true)
+            (getCoordinates, locationStatus) = (true, .authorised)
             manager.startUpdatingLocation()
         case .denied:
-            (locationStatus, showSettingsAlert) = (false, true)
+            (locationStatus, showSettingsAlert) = (.denied, true)
         default:
-            locationStatus = nil
+            locationStatus = .notDetermined
         }
     }
     
     func checkLocationStatusWhenAppear() {
         switch manager.authorizationStatus {
         case .denied:
-            locationStatus = false
+            locationStatus = .denied
         default:
-            locationStatus = nil
+            locationStatus = .notDetermined
         }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            (locationStatus, getCoordinates) = (true, true)
+            (locationStatus, getCoordinates) = (.authorised, true)
             manager.startUpdatingLocation()
         case .denied:
-            locationStatus = false
+            locationStatus = .denied
         default:
-            locationStatus = nil
+            locationStatus = .notDetermined
             manager.stopUpdatingLocation()
         }
     }

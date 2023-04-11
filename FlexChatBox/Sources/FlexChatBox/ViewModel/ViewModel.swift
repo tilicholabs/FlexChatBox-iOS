@@ -8,18 +8,22 @@ import SwiftUI
 import AVFoundation
 import CoreLocation
 
+enum FlexButtonAuthStatus {
+    case notDetermined, authorised, denied
+}
+
 class ViewModel: ObservableObject {
     private var audioRecorder: AVAudioRecorder?
     var fileName: URL?
     
     @Published var showAudioPreview = false
     @Published var isRecording = false
-    @Published var isMicPermissionGranted: Bool?
+    @Published var isMicPermissionGranted = FlexButtonAuthStatus.notDetermined
     
     @Published var textFieldText = FlexHelper.emptyString
     @Published var showSettingsAlert = false
     @Published var presentCamera = false
-    @Published var cameraStatus: Bool?
+    @Published var cameraStatus: FlexButtonAuthStatus = .notDetermined
     @Published var capturedImage: Image?
     @Published var videoURL: URL?
     @Published var location: Location?
@@ -33,16 +37,16 @@ class ViewModel: ObservableObject {
         
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            (cameraStatus, presentCamera) = (true, true)
+            (cameraStatus, presentCamera) = (.authorised, true)
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
-                    (self.presentCamera, self.cameraStatus) = (granted, granted)
+                    (self.presentCamera, self.cameraStatus) = granted ? (true, .authorised): (false, .denied)
                 }}
         case .denied:
-            (cameraStatus, showSettingsAlert) = (false, true)
+            (cameraStatus, showSettingsAlert) = (.denied, true)
         default:
-            cameraStatus = nil
+            cameraStatus = .notDetermined
             break
         }
     }
@@ -51,9 +55,9 @@ class ViewModel: ObservableObject {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .denied:
-            cameraStatus = false
+            cameraStatus = .denied
         default:
-            cameraStatus = nil
+            cameraStatus = .notDetermined
         }
     }
     
@@ -96,23 +100,23 @@ class ViewModel: ObservableObject {
         showSettingsAlert = false
         switch audioSession.recordPermission {
         case .undetermined:
-            audioSession.requestRecordPermission { self.isMicPermissionGranted = $0 }
+            audioSession.requestRecordPermission { self.isMicPermissionGranted = $0 ? .authorised: .denied }
         case .denied:
-            isMicPermissionGranted = false
+            isMicPermissionGranted = .denied
             showSettingsAlert = true
         case .granted:
-            isMicPermissionGranted = true
+            isMicPermissionGranted = .authorised
         @unknown default:
-            isMicPermissionGranted = nil
+            isMicPermissionGranted = .notDetermined
         }
     }
     
     func checkMicPermissionWhenAppear() {
         switch AVAudioSession.sharedInstance().recordPermission {
         case .denied:
-            isMicPermissionGranted = false
+            isMicPermissionGranted = .denied
         default:
-            isMicPermissionGranted = nil
+            isMicPermissionGranted = .notDetermined
         }
     }
     

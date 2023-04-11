@@ -19,7 +19,7 @@ public struct Contact: Identifiable, Hashable {
 
 class FetchedContacts: ObservableObject, Identifiable {
     let store = CNContactStore()
-    @Published var contactsStatus: Bool?
+    @Published var contactsStatus = FlexButtonAuthStatus.notDetermined
     @Published var presentContacts = false
     @Published var showSettingsAlert = false
     @Published var contacts = [Contact]()
@@ -55,7 +55,7 @@ class FetchedContacts: ObservableObject, Identifiable {
         case .notDetermined:
             store.requestAccess(for: .contacts) { granted, _ in
                 DispatchQueue.main.async {
-                    self.contactsStatus = granted
+                    self.contactsStatus = granted ? .authorised: .denied
                     guard granted else {
                         self.presentContacts = false
                         return
@@ -64,21 +64,21 @@ class FetchedContacts: ObservableObject, Identifiable {
                 }
             }
         case .denied:
-            (showSettingsAlert, contactsStatus) = (true, false)
+            (showSettingsAlert, contactsStatus) = (true, .denied)
         case .authorized:
-            contactsStatus = true
+            contactsStatus = .authorised
             fetchContacts()
         default:
-            contactsStatus = nil
+            contactsStatus = .notDetermined
         }
     }
     
     func checkContactsStatusWhenAppear() {
         switch CNContactStore.authorizationStatus(for: .contacts) {
         case .denied:
-            contactsStatus = false
+            contactsStatus = .denied
         default:
-            contactsStatus = nil
+            contactsStatus = .notDetermined
         }
     }
 }
