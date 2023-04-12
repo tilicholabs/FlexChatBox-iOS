@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E9B4DC929E6C8690004A664 /* FlexChatBox Demo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E9B4DC829E6C8690004A664 /* FlexChatBox Demo-Info.plist */; };
+		7E9B4DCE29E6C9660004A664 /* FlexChatBox in Frameworks */ = {isa = PBXBuildFile; productRef = 7E9B4DCD29E6C9660004A664 /* FlexChatBox */; };
 		DB3FF6FF29D2FB93008F5838 /* FlexChatBox Demo App.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */; };
 		DB3FF70329D2FB95008F5838 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB3FF70229D2FB95008F5838 /* Assets.xcassets */; };
 		DB3FF70629D2FB95008F5838 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB3FF70529D2FB95008F5838 /* Preview Assets.xcassets */; };
@@ -15,11 +17,11 @@
 		DB3FF71329D2FBD1008F5838 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70E29D2FBD0008F5838 /* Extension.swift */; };
 		DB3FF71429D2FBD1008F5838 /* DemoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */; };
 		DB3FF71529D2FBD1008F5838 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF71029D2FBD1008F5838 /* AudioView.swift */; };
-		DB3FF71829D2FC73008F5838 /* FlexChatBox in Frameworks */ = {isa = PBXBuildFile; productRef = DB3FF71729D2FC73008F5838 /* FlexChatBox */; };
-		DB7D2E0629D309D700E4A59B /* FlexChatBox Demo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E9B4DC829E6C8690004A664 /* FlexChatBox Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FlexChatBox Demo-Info.plist"; sourceTree = SOURCE_ROOT; };
+		7E9B4DCB29E6C8F10004A664 /* FlexChatBox-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "FlexChatBox-iOS"; path = ..; sourceTree = "<group>"; };
 		DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlexChatBox Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlexChatBox Demo App.swift"; sourceTree = "<group>"; };
 		DB3FF70229D2FB95008F5838 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -29,8 +31,6 @@
 		DB3FF70E29D2FBD0008F5838 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoHelper.swift; sourceTree = "<group>"; };
 		DB3FF71029D2FBD1008F5838 /* AudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
-		DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FlexChatBox Demo-Info.plist"; sourceTree = "<group>"; };
-		DBAB582629D2FDA7008C982C /* FlexChatBox */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlexChatBox; path = ../FlexChatBox; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,20 +38,36 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB3FF71829D2FC73008F5838 /* FlexChatBox in Frameworks */,
+				7E9B4DCE29E6C9660004A664 /* FlexChatBox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E9B4DCA29E6C8F10004A664 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				7E9B4DCB29E6C8F10004A664 /* FlexChatBox-iOS */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		7E9B4DCC29E6C9660004A664 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DB3FF6F229D2FB93008F5838 = {
 			isa = PBXGroup;
 			children = (
-				DB7D2E0529D309D700E4A59B /* FlexChatBox Demo-Info.plist */,
+				7E9B4DCA29E6C8F10004A664 /* Packages */,
+				7E9B4DC829E6C8690004A664 /* FlexChatBox Demo-Info.plist */,
 				DB3FF6FD29D2FB93008F5838 /* FlexChatBox Demo */,
 				DB3FF6FC29D2FB93008F5838 /* Products */,
-				DB3FF71629D2FC73008F5838 /* Frameworks */,
+				7E9B4DCC29E6C9660004A664 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,14 +102,6 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		DB3FF71629D2FC73008F5838 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DBAB582629D2FDA7008C982C /* FlexChatBox */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -111,7 +119,7 @@
 			);
 			name = "FlexChatBox Demo";
 			packageProductDependencies = (
-				DB3FF71729D2FC73008F5838 /* FlexChatBox */,
+				7E9B4DCD29E6C9660004A664 /* FlexChatBox */,
 			);
 			productName = FCB_DemoApp;
 			productReference = DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */;
@@ -141,6 +149,8 @@
 				Base,
 			);
 			mainGroup = DB3FF6F229D2FB93008F5838;
+			packageReferences = (
+			);
 			productRefGroup = DB3FF6FC29D2FB93008F5838 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -155,8 +165,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB7D2E0629D309D700E4A59B /* FlexChatBox Demo-Info.plist in Resources */,
 				DB3FF70629D2FB95008F5838 /* Preview Assets.xcassets in Resources */,
+				7E9B4DC929E6C8690004A664 /* FlexChatBox Demo-Info.plist in Resources */,
 				DB3FF70329D2FB95008F5838 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,7 +396,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DB3FF71729D2FC73008F5838 /* FlexChatBox */ = {
+		7E9B4DCD29E6C9660004A664 /* FlexChatBox */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlexChatBox;
 		};

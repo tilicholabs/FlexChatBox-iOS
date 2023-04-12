@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import AVKit
-import FlexChatBox
-import AVFoundation
 import MapKit
+import AVKit
+import AVFoundation
+import FlexChatBox
 
 struct ContentView: View {
     @State private var flexMessages = [FlexOutput]()

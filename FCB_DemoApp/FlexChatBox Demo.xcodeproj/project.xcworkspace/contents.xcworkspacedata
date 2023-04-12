@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/damerlabhanuprakash/Documents/GitHub/FlexChatBox-iOS/FCB_DemoApp/FlexChatBox Demo.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
