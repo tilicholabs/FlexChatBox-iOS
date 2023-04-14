@@ -144,7 +144,7 @@ public struct FlexChatView: View {
     @ViewBuilder
     private var photosPicker: some View {
         PhotosPicker(selection: $imagePicker.imageSelections,
-                     maxSelectionCount: 10,
+                     maxSelectionCount: 30,
                      matching: .any(of: [.images, .videos]),
                      photoLibrary: .shared()) {
             Image(systemName: flexType.icon)

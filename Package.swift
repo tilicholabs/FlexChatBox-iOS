@@ -22,11 +22,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "FlexChatBox",
-            dependencies: []
+            path: "Sources"
         ),
         .testTarget(
             name: "FlexChatBoxTests",
-            dependencies: ["FlexChatBox"]
+            dependencies: ["FlexChatBox"],
+            path: "Tests"
         ),
     ]
 )
