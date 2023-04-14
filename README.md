@@ -25,7 +25,7 @@ The Swift Package Manager is a tool for automating the distribution of Swift cod
 ## Features
 The feature set includes: 
 - Text messages and an integrated type of media message can be obtained from the SDK. We have integrated the various types of media messages required for a chat conversation.
-    ### `Media message types:`
+    ### Media message types:
     - TextField
         - A user can send a single line or multiple lines of a text message
         - ![TextFiled](https://user-images.githubusercontent.com/108006729/231765163-9faa99b3-ef79-4cfc-8e72-4d244cee9b50.gif)
@@ -63,6 +63,23 @@ The feature set includes:
         - ![Files](https://user-images.githubusercontent.com/108006729/231960205-4c977878-2da6-4121-82f8-2d6a381388fe.gif)
 
 ## Usage
+The ChatBox function accepts following enum.
+
+```swift
+enum FlexType {
+    case camera
+    case gallery
+    case mic
+    case location
+    case contacts
+    case files
+    case custom
+}
+```
+The default flexType is `Camera`.
+
+The developer can expect the flexCompletion which gives and enum called `FlexOutput`. Based on the given flexType, flexOutput holds respective type of the data. For example, if the flexType is camera than flexOutput holds either an Image or a video url.
+
 ```swift
 import FlexChatBox
 
