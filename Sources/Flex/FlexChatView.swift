@@ -18,8 +18,8 @@ public struct FlexChatView: View {
     @State var showLocationPreview = false
     @State var showPicker = false
     
-    @EnvironmentObject private var viewModel: ViewModel
-    @EnvironmentObject var contacts: FetchedContacts
+    @StateObject private var viewModel = ViewModel()
+    @StateObject var contacts = FetchedContacts()
     
     @StateObject var imagePicker = ImagePicker()
     @StateObject var locationManager = LocationManager.shared
@@ -29,7 +29,7 @@ public struct FlexChatView: View {
     
     let flexType: FlexType
     let textFieldPlaceHolder: String
-    let flexCompletion: (FlexOutput) -> Void
+    let onClickSend: (String) -> Void
     
     private var audioRecordingViewColor: Color {
         viewModel.isDragged ? .red : .primary
@@ -37,10 +37,10 @@ public struct FlexChatView: View {
     
     public init(flexType: FlexType,
                 placeholder: String,
-                flexCompletion: @escaping (FlexOutput) -> Void) {
+                onClickSend: @escaping (String) -> Void) {
         self.flexType = flexType
         self.textFieldPlaceHolder = placeholder
-        self.flexCompletion = flexCompletion
+        self.onClickSend = onClickSend
     }
     
     public var body: some View {
@@ -48,7 +48,9 @@ public struct FlexChatView: View {
             if viewModel.showAudioPreview,
                let audioURL = viewModel.fileName {
                 AudioPreview() {
-                    if $0 { self.flexCompletion(.mic(audioURL)) }
+                    if $0 {
+                        flexType.onCompletion(value: audioURL)
+                    }
                     viewModel.isRecording = false
                     viewModel.showAudioPreview = false
                     viewModel.fileName = nil
@@ -89,7 +91,7 @@ public struct FlexChatView: View {
                 .focused($start)
                 .onSubmit {
                     if !viewModel.textFieldText.isEmpty {
-                        flexCompletion(.text(viewModel.textFieldText))
+                        onClickSend(viewModel.textFieldText)
                     }
                 }
                 .padding(FlexHelper.padding)
@@ -121,11 +123,11 @@ public struct FlexChatView: View {
                 .ignoresSafeArea()
                 .onReceive(viewModel.$capturedImage) { image in
                     guard let image else { return }
-                    self.flexCompletion(.camera(image))
+                    flexType.onCompletion(value: (image))
                 }
                 .onReceive(viewModel.$videoURL) { url in
                     guard let url else { return }
-                    self.flexCompletion(.video(url))
+                    flexType.onCompletion(value: (url))
                 }
         }
         
@@ -156,7 +158,7 @@ public struct FlexChatView: View {
         }
                      .onAppear {
                          imagePicker.onCompletion = {
-                             self.flexCompletion(.gallery($0))
+                             flexType.onCompletion(value: $0)
                          }
                      }
     }
@@ -251,7 +253,7 @@ public struct FlexChatView: View {
             if let location = viewModel.location {
                 LocationPreview(location: location) { location in
                     if let location {
-                        self.flexCompletion(.location(location))
+                        flexType.onCompletion(value: location)
                     }
                     locationManager.getCoordinates = false
                 }
@@ -278,7 +280,9 @@ public struct FlexChatView: View {
         }
         
         .sheet(isPresented: $contacts.presentContacts) {
-            ContactsSheet(completion: { flexCompletion(.contacts($0)) })
+            ContactsSheet {
+                flexType.onCompletion(value: $0)
+            }
                 .environmentObject(contacts)
         }
         
@@ -315,7 +319,7 @@ public struct FlexChatView: View {
             do {
                 let fileURLs = try result.get()
                 DispatchQueue.main.async {
-                    flexCompletion(.files(fileURLs.filter { $0.startAccessingSecurityScopedResource() }))
+                    flexType.onCompletion(value: fileURLs.filter { $0.startAccessingSecurityScopedResource() })
                 }
             } catch {
                 print(error.localizedDescription)
@@ -343,7 +347,7 @@ public struct FlexChatView: View {
         let isTextEmpty = viewModel.textFieldText.isEmpty
         Button {
             if !isTextEmpty {
-                flexCompletion(.text(viewModel.textFieldText))
+                onClickSend(viewModel.textFieldText)
             }
         } label: {
             Image(systemName: FlexHelper.sendButtonImageName)
@@ -382,9 +386,11 @@ public struct FlexChatView: View {
 
 struct FlexChatView_Previews: PreviewProvider {
     static var previews: some View {
-        FlexChatView(flexType: .location, placeholder: FlexHelper.textFieldPlaceholder, flexCompletion: {
-            print($0)
-        })
+        FlexChatBox(flexType: .gallery({ media in
+//            print(media)
+        })) { text in
+//             print(text)
+        }
         .frame(maxHeight: .infinity, alignment: .bottom)
         .environmentObject(ViewModel())
     }
