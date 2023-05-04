@@ -78,36 +78,31 @@ The feature set includes:
 The ChatBox function accepts following enum.
 
 ```swift
+typealias CameraCallback = ((image: Image?, videoURL: URL?)) -> Void
 enum FlexType {
-    case camera
-    case gallery
-    case mic
-    case location
-    case contacts
-    case files
-    case custom
+    case camera(CameraCallback)
+    case gallery((Media) -> Void)
+    case mic((URL) -> Void)
+    case location((Location) -> Void)
+    case contacts(([Contact]) -> Void)
+    case files(([URL]) -> Void)
+    case custom((String) -> Void)
 }
 ```
-The default flexType is `Camera`.
 
-The developer can expect the flexCompletion which gives and enum called `FlexOutput`. Based on the given flexType, flexOutput holds respective type of the data. For example, if the flexType is camera than flexOutput holds either an Image or a video url.
+The developer can expect a completion from the enum `FlexType`. Based on the given flexType, the completion holds respective type of the data. For example, if the flexType is gallery than the completion holds `Media` which contains images and/or videos.
+
+### FlexChatBox usage:
 
 ```swift
 import FlexChatBox
 
 # returns "FlexChatBox view"
-FlexChatBox(flexType: .camera, 
-            placeholder: "Type your text message",
-            flexCompletion: { flexOutput in
-                switch flexOutput {
-                    case .text(let string):
-                        // Send textMessage
-                    case .camera(let image):
-                        // Send image
-                    default:
-                        return
-                }
-            })
+FlexChatView(flexType: .gallery { media in
+    // Send images and videos in media
+}) { textMessage in
+    // Send textMessage
+}
 ```
 
 ## Contributing
