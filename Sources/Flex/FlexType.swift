@@ -7,14 +7,50 @@
 
 import SwiftUI
 
-public enum FlexType: String, CaseIterable {
-    case camera
-    case gallery
-    case mic
-    case location
-    case contacts
-    case files
-    case custom
+public typealias CameraCallback = ((image: Image?, videoURL: URL?)) -> Void
+public enum FlexType {
+    case camera(CameraCallback)
+    case gallery((Media) -> Void)
+    case mic((URL) -> Void)
+    case location((Location) -> Void)
+    case contacts(([Contact]) -> Void)
+    case files(([URL]) -> Void)
+    case custom((String) -> Void)
+    
+    func onCompletion<T>(value: T) {
+        switch self {
+        case .camera(let completion):
+            if let image = value as? Image {
+                completion((image, nil))
+            } else if let videoURL = value as? URL {
+                completion((nil, videoURL))
+            }
+        case .gallery(let completion):
+            if let media = value as? Media {
+                completion(media)
+            }
+        case .mic(let completion):
+            if let url = value as? URL {
+                completion(url)
+            }
+        case .location(let completion):
+            if let location = value as? Location {
+                completion(location)
+            }
+        case .contacts(let completion):
+            if let contacts = value as? [Contact] {
+                completion(contacts)
+            }
+        case .files(let completion):
+            if let urls = value as? [URL] {
+                completion(urls)
+            }
+        case .custom(let completion):
+            if let text = value as? String {
+                completion(text)
+            }
+        }
+    }
 }
 
 public extension FlexType {
@@ -38,14 +74,32 @@ public extension FlexType {
     }
 }
 
-public enum FlexOutput {
-    case text(String)
-    case camera(Image)
-    case gallery(Media)
-    case mic(URL)
-    case custom(String)
-    case location(Location)
-    case contacts([Contact])
-    case files([URL])
-    case video(URL)
+public enum FlexTypeFactory {
+    public static func flexCamera(_ onSuccess: @escaping (Image?, URL?) -> Void) -> FlexType {
+        .camera { onSuccess($0, $1) }
+    }
+    
+    public static func flexGallery(_ onSuccess: @escaping (Media) -> Void) -> FlexType {
+        .gallery { onSuccess($0) }
+    }
+    
+    public static func flexMic(_ onSuccess: @escaping (URL) -> Void) -> FlexType {
+        .mic { onSuccess($0) }
+    }
+    
+    public static func flexLocation(_ onSuccess: @escaping (Location) -> Void) -> FlexType {
+        .location { onSuccess($0) }
+    }
+    
+    public static func flexContacts(_ onSuccess: @escaping ([Contact]) -> Void) -> FlexType {
+        .contacts { onSuccess($0) }
+    }
+    
+    public static func flexFiles(_ onSuccess: @escaping ([URL]) -> Void) -> FlexType {
+        .files { onSuccess($0) }
+    }
+    
+    public static func flexCustom(_ onSuccess: @escaping (String) -> Void) -> FlexType {
+        .custom { onSuccess($0) }
+    }
 }

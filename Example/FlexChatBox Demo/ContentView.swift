@@ -12,48 +12,38 @@ import AVFoundation
 import FlexChatBox
 
 struct ContentView: View {
-    @State private var flexMessages = [FlexOutput]()
     
-    @State private var isAudioPlaying = false
-    @State private var flexType: FlexType = .camera
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .trailing) {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .trailing) {
-                        ForEach(0..<flexMessages.count, id: \.self) { index in
-                            let message = flexMessages[index]
+                        ForEach(0..<viewModel.messages.count, id: \.self) { index in
+                            let message = viewModel.messages[index]
                             switch message {
-                            case .text(let text):
-                                textView(text: text)
-                            case .camera(let image):
-                                imageView(image: image)
-                            case .gallery(let media):
-                                let images = media.images
+                            case .images(let images):
                                 ForEach(0..<images.count, id: \.self) { index in
                                     imageView(image: images[index])
                                 }
-                                
-                                let videos = media.videos
-                                ForEach(0..<videos.count, id: \.self) { index in
-                                    videoView(url: videos[index])
+                            case .videos(let videoURLs):
+                                ForEach(0..<videoURLs.count, id: \.self) { index in
+                                    videoView(url: videoURLs[index])
                                 }
                             case .mic(let audioURL):
                                 AudioView()
                                     .environmentObject(AudioPlayer(url: audioURL))
-                            case .custom(let string):
-                                Text(string)
                             case .location(let location):
                                 locationView(location: location)
                             case .contacts(let contacts):
                                 contactsView(contacts: contacts)
-                            case .files(let filesURLs):
-                                ForEach(0..<filesURLs.count, id: \.self) { index in
-                                    documentView(url: filesURLs[index])
+                            case .files(let fileURLs):
+                                ForEach(0..<fileURLs.count, id: \.self) { index in
+                                    documentView(url: fileURLs[index])
                                 }
-                            case .video(let videoURL):
-                                videoView(url: videoURL)
+                            case .text(let text):
+                                textView(text: text)
                             }
                         }
                     }
@@ -63,10 +53,12 @@ struct ContentView: View {
                 }
                 .rotationEffect(.radians(.pi))
                 .scaleEffect(x: -1, y: 1, anchor: .center)
-                .animation(.easeInOut(duration: 1), value: flexMessages.count)
+                .animation(.easeInOut(duration: 1), value: viewModel.messages.count)
                 .ignoresSafeArea()
                 
-                FlexChatBox(flexType: flexType) { self.flexMessages.append($0) }
+                FlexChatBox(flexType: viewModel.flexType) {
+                    viewModel.messages.append(.text($0))
+                }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
             .padding()
@@ -84,9 +76,11 @@ struct ContentView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Picker("", selection: $flexType) {
-                        ForEach(FlexType.allCases, id: \.self) {
-                            Text($0.rawValue)
+                    Menu(viewModel.flexType.icon + " \u{276F}") {
+                        ForEach(0..<viewModel.listOfFlexTypes.count, id: \.self) { index in
+                            Button {
+                                viewModel.flexType = viewModel.listOfFlexTypes[index].0
+                            } label: { Text(viewModel.listOfFlexTypes[index].1) }
                         }
                     }
                 }

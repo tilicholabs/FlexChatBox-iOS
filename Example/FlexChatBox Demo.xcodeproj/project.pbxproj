@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E6B517729F1003A008685BB /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6B517629F1003A008685BB /* ViewModel.swift */; };
 		7E9B4DC929E6C8690004A664 /* FlexChatBox Demo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E9B4DC829E6C8690004A664 /* FlexChatBox Demo-Info.plist */; };
 		7E9B4DCE29E6C9660004A664 /* FlexChatBox in Frameworks */ = {isa = PBXBuildFile; productRef = 7E9B4DCD29E6C9660004A664 /* FlexChatBox */; };
 		DB3FF6FF29D2FB93008F5838 /* FlexChatBox Demo App.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E6B517629F1003A008685BB /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		7E9B4DC829E6C8690004A664 /* FlexChatBox Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FlexChatBox Demo-Info.plist"; sourceTree = SOURCE_ROOT; };
 		7E9B4DCB29E6C8F10004A664 /* FlexChatBox-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "FlexChatBox-iOS"; path = ..; sourceTree = "<group>"; };
 		DB3FF6FB29D2FB93008F5838 /* FlexChatBox Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlexChatBox Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +90,7 @@
 				DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */,
 				DB3FF70E29D2FBD0008F5838 /* Extension.swift */,
 				DB3FF70C29D2FBD0008F5838 /* ContentView.swift */,
+				7E6B517629F1003A008685BB /* ViewModel.swift */,
 				DB3FF70229D2FB95008F5838 /* Assets.xcassets */,
 				DB3FF70429D2FB95008F5838 /* Preview Content */,
 			);
@@ -184,6 +187,7 @@
 				DB3FF71229D2FBD1008F5838 /* AudioPlayer.swift in Sources */,
 				DB3FF71429D2FBD1008F5838 /* DemoHelper.swift in Sources */,
 				DB3FF71329D2FBD1008F5838 /* Extension.swift in Sources */,
+				7E6B517729F1003A008685BB /* ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
