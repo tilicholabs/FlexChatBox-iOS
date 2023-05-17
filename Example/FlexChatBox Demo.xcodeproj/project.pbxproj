@@ -18,6 +18,9 @@
 		DB3FF71329D2FBD1008F5838 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70E29D2FBD0008F5838 /* Extension.swift */; };
 		DB3FF71429D2FBD1008F5838 /* DemoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */; };
 		DB3FF71529D2FBD1008F5838 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FF71029D2FBD1008F5838 /* AudioView.swift */; };
+		EDDAD7E12A14CCF7009299CE /* EntityStoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDAD7E02A14CCF7009299CE /* EntityStoreModel.swift */; };
+		EDDAD7E32A14D3F3009299CE /* ContentViewV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDAD7E22A14D3F3009299CE /* ContentViewV2.swift */; };
+		EDDAD7E62A14E181009299CE /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDAD7E52A14E181009299CE /* CustomView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +36,9 @@
 		DB3FF70E29D2FBD0008F5838 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		DB3FF70F29D2FBD1008F5838 /* DemoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoHelper.swift; sourceTree = "<group>"; };
 		DB3FF71029D2FBD1008F5838 /* AudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
+		EDDAD7E02A14CCF7009299CE /* EntityStoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStoreModel.swift; sourceTree = "<group>"; };
+		EDDAD7E22A14D3F3009299CE /* ContentViewV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewV2.swift; sourceTree = "<group>"; };
+		EDDAD7E52A14E181009299CE /* CustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +90,7 @@
 		DB3FF6FD29D2FB93008F5838 /* FlexChatBox Demo */ = {
 			isa = PBXGroup;
 			children = (
+				EDDAD7E42A14D421009299CE /* v2 */,
 				DB3FF6FE29D2FB93008F5838 /* FlexChatBox Demo App.swift */,
 				DB3FF70D29D2FBD0008F5838 /* AudioPlayer.swift */,
 				DB3FF71029D2FBD1008F5838 /* AudioView.swift */,
@@ -103,6 +110,16 @@
 				DB3FF70529D2FB95008F5838 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		EDDAD7E42A14D421009299CE /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				EDDAD7E22A14D3F3009299CE /* ContentViewV2.swift */,
+				EDDAD7E02A14CCF7009299CE /* EntityStoreModel.swift */,
+				EDDAD7E52A14E181009299CE /* CustomView.swift */,
+			);
+			path = v2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +201,10 @@
 				DB3FF6FF29D2FB93008F5838 /* FlexChatBox Demo App.swift in Sources */,
 				DB3FF71529D2FBD1008F5838 /* AudioView.swift in Sources */,
 				DB3FF71129D2FBD1008F5838 /* ContentView.swift in Sources */,
+				EDDAD7E32A14D3F3009299CE /* ContentViewV2.swift in Sources */,
 				DB3FF71229D2FBD1008F5838 /* AudioPlayer.swift in Sources */,
+				EDDAD7E62A14E181009299CE /* CustomView.swift in Sources */,
+				EDDAD7E12A14CCF7009299CE /* EntityStoreModel.swift in Sources */,
 				DB3FF71429D2FBD1008F5838 /* DemoHelper.swift in Sources */,
 				DB3FF71329D2FBD1008F5838 /* Extension.swift in Sources */,
 				7E6B517729F1003A008685BB /* ViewModel.swift in Sources */,

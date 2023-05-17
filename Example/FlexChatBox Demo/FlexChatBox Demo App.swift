@@ -11,7 +11,8 @@ import SwiftUI
 struct FlexChatBox_DemoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentViewV2()
+//            ContentView()
         }
     }
 }
